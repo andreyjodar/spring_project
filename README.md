@@ -29,10 +29,16 @@
 - **@RestController** --> define que uma classe Controller REST
 - **@GetMapping** --> define um mapeamento de uma requisição GET
 - **@PostMapping** --> define o mapeamento de uma requisição POST
+- **@PutMapping** --> define o mapeamento de uma requisição PUT
 - **@RequestParam** --> define um parâmetro da requisição
 - **@RequestBody** --> define que um corpo da requisição deve ser convertido em uma Classe Java
 - **@Service** --> define uma classe Service registrando no conteiner de injeção de dependência
 - **@Autowired** --> define a injeção automática de uma dependência quando for necessário
+- **@NotBlank** --> define um atributo como obrigatório
+- **@Email** --> define um campo como email para a validação
+- **@CPF** --> defini um campo como CPF para a validação
+- **@Valid** --> usado para validar uma entidade de entrada em uma requisição POST
+- **@PathParam** --> define um parâmetro incluso no caminho
 
 ## Injeção de Dependência
 - Pode ser feita por um construtor ou usando a notação @Autowired
@@ -54,5 +60,12 @@
 
 ## Ferramentas Auxiliares
 - **Insomnia** ou **Postman** --> usado para testar requisições POST
-- **XAMP** --> usado para 
-- **phpMyAdmin** -->
+- **XAMP** --> usado para fazer contado com o banco e o servidor
+- **phpMyAdmin** --> servidor utilizado para o projeto
+
+## Arquitetura Utilizada
+- **Client:** Postman ou Front
+- **Controller:** controlador de requisições
+- **Service:** executa operações envolvendo model e repository
+- **Model:** contém as entidades que serão persistidas
+- **Repository:** manipula o banco de dados (interface)
