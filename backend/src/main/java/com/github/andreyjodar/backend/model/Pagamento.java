@@ -9,28 +9,28 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Entity
-@Data 
-@Table(name = "lance")
-public class Lance {
+@Data
+@Table(name="pagamento")
+public class Pagamento {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "{validation.bidvalue.notnull}")
-    private Float valorLance;
+    @ManyToOne
+    @JoinColumn(name="leilao_id", nullable = false)
+    private Leilao leilao;
+
+    @NotNull(message = "{validation.value.notnull}")
+    private Float valor;
 
     @NotNull(message = "{validation.datetime.notnull}")
     private LocalDateTime dataHora;
-
-    @ManyToOne 
-    @JoinColumn(name = "pessoa_id", nullable = false)
-    private Pessoa pessoa;
-
-    @ManyToOne
-    @JoinColumn(name = "leilao_id", nullable = false)
-    private Leilao leilao;
+    
+    @NotBlank(message = "{validation.status.notblank}")
+    private String status;
 }
