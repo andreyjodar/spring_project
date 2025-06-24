@@ -8,6 +8,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.github.andreyjodar.backend.exception.NotFoundException;
 import com.github.andreyjodar.backend.model.Pessoa;
 import com.github.andreyjodar.backend.repository.PessoaRepositoy;
 
@@ -38,7 +39,7 @@ public class PessoaService {
 
     public Pessoa buscarPorId(Long id) {
         return pessoaRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(messageSource
+                .orElseThrow(() -> new NotFoundException(messageSource
                         .getMessage("pessoa.notfound", new Object[] { id },
                                 LocaleContextHolder.getLocale())));
     }
