@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
@@ -19,9 +20,11 @@ public class Categoria {
     private Long id;
 
     @NotBlank(message = "{validation.name.notblank}")
+    @Size(max = 100, message = "{validation.name.size}")
     private String nome;
 
     @NotBlank(message = "{validation.note.notblank}")
+    @Size(max = 200, message = "{validation.note.size}")
     private String observacao;
     
     @ManyToOne

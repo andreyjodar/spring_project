@@ -8,30 +8,26 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name="imagem")
-public class Imagem {
+public class PessoaPerfil {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "{validation.name.notblank}")
-    @Size(max = 100, message = "{validation.name.size}")
-    private String nomeImagem;
+    @ManyToOne
+    @JoinColumn(name = "pessoa_id", nullable = false)
+    private Pessoa pessoa;
+
+    @ManyToOne
+    @JoinColumn(name = "perfil_id", nullable = false)
+    private Perfil perfil;
 
     @NotNull(message = "{validation.datetime.notnull}")
     @PastOrPresent(message = "{validation.datetime.notfuture}")
-    private LocalDateTime dataHoraCadastro;
-
-    @ManyToOne
-    @JoinColumn(name="leilao_id", nullable = false)
-    private Leilao leilao;
+    private LocalDateTime dataAtribuicao;
 }

@@ -15,6 +15,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
@@ -26,6 +28,7 @@ public class Leilao {
     private Long id;
 
     @NotBlank(message = "{validation.title.notblank}")
+    @Size(max = 100, message = "{validation.title.size}")
     private String titulo;
 
     @ManyToOne
@@ -40,15 +43,17 @@ public class Leilao {
     private List<Imagem> imagens;
 
     @NotBlank(message = "{validation.description.notblank}")
+    @Size(max = 255, message = "{validation.description.size}")
     private String descricao;
 
     @NotBlank(message = "{validation.longdescription.notblank}")
+    @Size(max = 255, message = "{validation.longdescription.size}")
     private String descricaoDetalhada;
 
-    @NotNull(message = "{validation.startdatetime.notnull}")
+    @NotNull(message = "{validation.datetime.notnull}")
     private LocalDateTime dataHoraInicio;
 
-    @NotNull(message = "{validation.enddatetime.notnull}")
+    @NotNull(message = "{validation.datetime.notnull}")
     private LocalDateTime dataHoraFim;
 
     @NotNull(message = "{validation.status.notnull}")
@@ -56,12 +61,15 @@ public class Leilao {
     private StatusLeilao status;
 
     @NotBlank(message = "{validation.note.notblank}")
+    @Size(max = 200, message = "{validation.note.size}")
     private String observacao;
 
     @NotNull(message = "{validation.incrementvalue.notnull}")
+    @Positive(message = "{validation.incrementvalue.positive}")
     private Float valorIncremento;
 
     @NotNull(message = "{validation.minbid.notnull}")
+    @Positive(message = "{validation.minbid.positive}")
     private Float lanceMinimo;
 }
 

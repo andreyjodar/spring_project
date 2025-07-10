@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Entity
@@ -21,9 +23,11 @@ public class Lance {
     private Long id;
 
     @NotNull(message = "{validation.bidvalue.notnull}")
+    @Positive(message = "{validation.bidvalue.positive}")
     private Float valorLance;
 
     @NotNull(message = "{validation.datetime.notnull}")
+    @PastOrPresent(message = "{validation.datetime.notfuture}")
     private LocalDateTime dataHora;
 
     @ManyToOne 

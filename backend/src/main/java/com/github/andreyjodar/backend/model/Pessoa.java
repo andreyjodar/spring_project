@@ -1,8 +1,10 @@
 package com.github.andreyjodar.backend.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +16,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
@@ -25,6 +28,7 @@ public class Pessoa {
     private Long id;
 
     @NotBlank(message = "{validation.name.notblank}")
+    @Size(max = 100, message = "{validation.name.size}")
     private String nome;
 
     @NotBlank(message = "{validation.email.notblank}")
@@ -32,28 +36,24 @@ public class Pessoa {
     private String email;
 
     @NotBlank(message = "{validation.password.notblank}")
+    @Size(min = 6, message = "{validation.password.size}")
     private String senha;
 
     @NotBlank(message = "{validation.validatorcode.notblank}")
+    @Size(max = 100, message = "{validation.validatorcode.size}")
     private String codigoValidacao;
 
-    @NotNull(message = "{validation.validatorcodelimit.notnull}")
+    @NotNull(message = "{validation.date.notnull}")
     private LocalDate validadeCodigoValidacao;
 
     @NotNull(message = "{validation.active.notnull}")
     private Boolean ativo;
 
-    @OneToMany(mappedBy = "autor")
-    private List<Feedback> feedbacksEscritos;
-
     @OneToMany(mappedBy = "destinatario")
     private List<Feedback> feedbacksRecebidos;
 
-    @OneToMany(mappedBy = "autor")
-    private List<Leilao> meusLeiloes;
-
-    @OneToMany(mappedBy = "autor")
-    private List<Categoria> minhasCategorias;
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PessoaPerfil> pessoaPerfis = new ArrayList<>();
 
     @Lob
     @Column(name = "foto_perfil", columnDefinition = "LONGBLOB")
