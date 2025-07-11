@@ -68,7 +68,6 @@ export default function Login() {
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               feedback={false}
-              toggleMask
               className="login-input"
             />
             <label htmlFor="senha" className="login-label">
