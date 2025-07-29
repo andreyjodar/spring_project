@@ -13,36 +13,36 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.andreyjodar.backend.model.Pessoa;
-import com.github.andreyjodar.backend.service.PessoaService;
+import com.github.andreyjodar.backend.model.Perfil;
+import com.github.andreyjodar.backend.service.PerfilService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/pessoa")
-public class PessoaController {
+@RequestMapping("/perfil")
+public class PerfilController {
 
     @Autowired
-    private PessoaService pessoaService;
+    private PerfilService perfilService;
 
     @GetMapping
-    public ResponseEntity<Page<Pessoa>> buscarTodos(Pageable pageable) {
-        return ResponseEntity.ok(pessoaService.buscarTodos(pageable));
+    public ResponseEntity<Page<Perfil>> buscarTodos(Pageable pageable) {
+        return ResponseEntity.ok(perfilService.buscarTodos(pageable));
     }
 
     @PostMapping
-    public ResponseEntity<Pessoa> inserir(@Valid @RequestBody Pessoa pessoa) {
-        return ResponseEntity.ok(pessoaService.inserir(pessoa));
+    public ResponseEntity<Perfil> inserir(@Valid @RequestBody Perfil perfil) {
+        return ResponseEntity.ok(perfilService.inserir(perfil));
     }
 
     @PutMapping
-    public ResponseEntity<Pessoa> alterar(@Valid @RequestBody Pessoa pessoa) {
-        return ResponseEntity.ok(pessoaService.alterar(pessoa));
+    public ResponseEntity<Perfil> alterar(@Valid @RequestBody Perfil perfil) {
+        return ResponseEntity.ok(perfilService.alterar(perfil));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> excluir(@PathVariable("id") Long id) {
-        pessoaService.excluir(id);
+        perfilService.excluir(id);
         return ResponseEntity.ok("Excluído");
     }
 
