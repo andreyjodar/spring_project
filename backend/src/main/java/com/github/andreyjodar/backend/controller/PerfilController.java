@@ -19,7 +19,7 @@ import com.github.andreyjodar.backend.service.PerfilService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/perfil")
+@RequestMapping("/perfis")
 public class PerfilController {
 
     @Autowired

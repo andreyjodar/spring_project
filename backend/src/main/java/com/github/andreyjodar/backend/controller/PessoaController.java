@@ -19,7 +19,7 @@ import com.github.andreyjodar.backend.service.PessoaService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/pessoa")
+@RequestMapping("/pessoas")
 public class PessoaController {
 
     @Autowired
