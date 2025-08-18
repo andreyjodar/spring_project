@@ -77,9 +77,9 @@ public class RoleService {
 
     @PostConstruct
     private void initDefaultRoles() {
-        createInitRole("ADMIN");
-        createInitRole("SELLER");
-        createInitRole("BUYER");
+        createInitRole("ROLE_ADMIN");
+        createInitRole("ROLE_SELLER");
+        createInitRole("ROLE_BUYER");
     }
 
     private void createInitRole(String roleName) {

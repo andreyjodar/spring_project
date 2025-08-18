@@ -22,25 +22,25 @@ public class EmailService {
     private TemplateEngine templateEngine;
 
     @Async
-    public void simpleEmail(String para, String assunto, String mensagem) {
+    public void simpleEmail(String to, String subject, String message) {
         SimpleMailMessage simpleMail = new SimpleMailMessage();
-        simpleMail.setTo(para);
-        simpleMail.setSubject(assunto);
-        simpleMail.setText(mensagem);
+        simpleMail.setTo(to);
+        simpleMail.setSubject(subject);
+        simpleMail.setText(message);
         javaMail.send(simpleMail);
     }
 
     @Async
-    public void emailTemplate(String para, String assunto, Context variaveisEmail, String arquivoTemplate) {
+    public void emailTemplate(String to, String subject, Context context, String template) {
 
-        String process = templateEngine.process(arquivoTemplate, variaveisEmail);
+        String process = templateEngine.process(template, context);
 
         MimeMessage message = javaMail.createMimeMessage();
         MimeMessageHelper helper;
         try {
             helper = new MimeMessageHelper(message, true);
-            helper.setTo(para);
-            helper.setSubject(assunto);
+            helper.setTo(to);
+            helper.setSubject(subject);
             helper.setText(process, true);
         } catch (MessagingException e) {
             e.printStackTrace();

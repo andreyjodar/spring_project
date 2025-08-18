@@ -16,11 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
-import com.github.andreyjodar.backend.core.exception.BusinessException;
 import com.github.andreyjodar.backend.core.exception.NotFoundException;
-import com.github.andreyjodar.backend.features.user.model.RegisterUserRequest;
-import com.github.andreyjodar.backend.features.user.model.Role;
+import com.github.andreyjodar.backend.features.role.model.Role;
+import com.github.andreyjodar.backend.features.role.service.RoleService;
+import com.github.andreyjodar.backend.features.user.model.RegisterRequest;
 import com.github.andreyjodar.backend.features.user.model.User;
+import com.github.andreyjodar.backend.features.user.model.UserResponse;
 import com.github.andreyjodar.backend.features.user.repository.UserRepository;
 import com.github.andreyjodar.backend.shared.services.EmailService;
 
@@ -86,10 +87,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll(pageable);
     }
 
-    public User fromDto(RegisterUserRequest userRequest) {
-        if(userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
-            throw new BusinessException("Email já está sendo utilizado");
-        }
+    public User fromDto(RegisterRequest userRequest) {
 
         User newUser = new User();
         Set<Role> roles = roleService.findRolesByNames(userRequest.getRoles());
@@ -99,6 +97,17 @@ public class UserService implements UserDetailsService {
         newUser.setPassword(userRequest.getPassword());
         newUser.setRoles(roles);
         return newUser;
+    }
+
+    public UserResponse fromDto(User user) {
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
+        userResponse.setName(user.getName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setActive(user.getActive());
+        userResponse.setRoles(user.getRoles().stream()
+            .map(Role::getName).collect(java.util.stream.Collectors.toSet()));
+        return userResponse;
     }
 
     @Override

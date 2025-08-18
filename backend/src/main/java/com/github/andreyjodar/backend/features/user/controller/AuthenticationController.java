@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.andreyjodar.backend.features.user.model.LoginUserRequest;
-import com.github.andreyjodar.backend.features.user.model.RegisterUserRequest;
+import com.github.andreyjodar.backend.features.user.model.LoginRequest;
+import com.github.andreyjodar.backend.features.user.model.LoginResponse;
+import com.github.andreyjodar.backend.features.user.model.RegisterRequest;
 import com.github.andreyjodar.backend.features.user.service.UserService;
 import com.github.andreyjodar.backend.shared.services.AuthService;
 import com.github.andreyjodar.backend.features.user.model.User;
-import com.github.andreyjodar.backend.features.user.model.UserAuthDto;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,13 +25,19 @@ public class AuthenticationController {
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<UserAuthDto> login(@RequestBody LoginUserRequest user) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest user) {
         return ResponseEntity.ok(authenticationService.authenticate(user));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterUserRequest user) {
+    public ResponseEntity<LoginResponse> register(@RequestBody RegisterRequest user) {
         User newUser = userService.fromDto(user);
-        return ResponseEntity.ok(userService.create(newUser));
+        String password = newUser.getPassword();
+        User userDb = userService.create(newUser);
+        
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail(userDb.getEmail());
+        loginRequest.setPassword(password);
+        return ResponseEntity.ok(authenticationService.authenticate(loginRequest));
     }
 }
