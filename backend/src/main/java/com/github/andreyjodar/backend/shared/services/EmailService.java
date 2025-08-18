@@ -22,7 +22,7 @@ public class EmailService {
     private TemplateEngine templateEngine;
 
     @Async
-    public void enviarEmailSimples(String para, String assunto, String mensagem) {
+    public void simpleEmail(String para, String assunto, String mensagem) {
         SimpleMailMessage simpleMail = new SimpleMailMessage();
         simpleMail.setTo(para);
         simpleMail.setSubject(assunto);

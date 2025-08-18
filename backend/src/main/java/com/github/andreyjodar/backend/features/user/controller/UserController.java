@@ -26,22 +26,22 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<Page<User>> buscarTodos(Pageable pageable) {
+    public ResponseEntity<Page<User>> findAll(Pageable pageable) {
         return ResponseEntity.ok(userService.findAll(pageable));
     }
 
     @PostMapping
-    public ResponseEntity<User> inserir(@Valid @RequestBody User user) {
+    public ResponseEntity<User> create(@Valid @RequestBody User user) {
         return ResponseEntity.ok(userService.create(user));
     }
 
     @PutMapping
-    public ResponseEntity<User> alterar(@Valid @RequestBody User user) {
+    public ResponseEntity<User> update(@Valid @RequestBody User user) {
         return ResponseEntity.ok(userService.update(user));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> excluir(@PathVariable("id") Long id) {
+    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
         userService.delete(id);
         return ResponseEntity.ok("Excluído");
     }

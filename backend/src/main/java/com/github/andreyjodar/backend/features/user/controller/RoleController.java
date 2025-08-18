@@ -19,7 +19,7 @@ import com.github.andreyjodar.backend.features.user.service.RoleService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/perfis")
+@RequestMapping("/roles")
 public class RoleController {
 
     @Autowired
@@ -31,13 +31,13 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<Role> create(@Valid @RequestBody Role perfil) {
-        return ResponseEntity.ok(roleService.create(perfil));
+    public ResponseEntity<Role> create(@Valid @RequestBody Role role) {
+        return ResponseEntity.ok(roleService.create(role));
     }
 
     @PutMapping
-    public ResponseEntity<Role> update(@Valid @RequestBody Role perfil) {
-        return ResponseEntity.ok(roleService.update(perfil));
+    public ResponseEntity<Role> update(@Valid @RequestBody Role role) {
+        return ResponseEntity.ok(roleService.update(role));
     }
 
     @DeleteMapping("/{id}")

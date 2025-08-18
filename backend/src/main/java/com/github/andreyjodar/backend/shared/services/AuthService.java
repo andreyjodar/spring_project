@@ -1,24 +1,19 @@
 package com.github.andreyjodar.backend.shared.services;
 
-import java.util.Random;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.andreyjodar.backend.core.security.JwtService;
 import com.github.andreyjodar.backend.features.user.model.User;
-import com.github.andreyjodar.backend.features.user.model.UserRequest;
+import com.github.andreyjodar.backend.features.user.model.UserAuthDto;
+import com.github.andreyjodar.backend.features.user.model.LoginUserRequest;
 import com.github.andreyjodar.backend.features.user.repository.UserRepository;
 
 @Service
-public class AuthService implements UserDetailsService {
+public class AuthService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -27,43 +22,18 @@ public class AuthService implements UserDetailsService {
     private JwtService jwtService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private UserRepository userRepository;
 
-    public String authenticate(UserRequest user) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+    public UserAuthDto authenticate(LoginUserRequest user) {
+        Authentication authentication = authenticationManager
+            .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 
-        return jwtService.generateToken(authentication.getName());
-    }
+            User userDb = userRepository.findByEmail(user.getEmail()).get();
+            UserAuthDto userAuthDto = new UserAuthDto();
+            userAuthDto.setEmail(userDb.getEmail());
+            userAuthDto.setName(userDb.getName());
+            userAuthDto.setToken(jwtService.generateToken(authentication.getName()));
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrada"));
-    }
-
-    public String encodePassword(String rawPassword) {
-        return passwordEncoder.encode(rawPassword);
-    }
-
-    public Boolean isPasswordValid(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
-    }
-
-    public String generateResetCode() {
-        return String.format("%06d", new Random().nextInt(999999));
-    }
-
-    public boolean isValidResetCode(User user, String code) {
-        return code != null && 
-               code.equals(user.getValidityCode()) && 
-               isCodeNotExpired(user);
-    }
-
-    private boolean isCodeNotExpired(User user) {
-        return true; // placeholder
+        return userAuthDto;
     }
 }
