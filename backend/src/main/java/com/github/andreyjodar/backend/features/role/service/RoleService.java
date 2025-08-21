@@ -1,4 +1,4 @@
-package com.github.andreyjodar.backend.features.user.service;
+package com.github.andreyjodar.backend.features.role.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,8 +13,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 
 import com.github.andreyjodar.backend.core.exception.BusinessException;
 import com.github.andreyjodar.backend.core.exception.NotFoundException;
-import com.github.andreyjodar.backend.features.user.model.Role;
-import com.github.andreyjodar.backend.features.user.repository.RoleRepository;
+import com.github.andreyjodar.backend.features.role.model.Role;
+import com.github.andreyjodar.backend.features.role.repository.RoleRepository;
 
 import jakarta.annotation.PostConstruct;
 

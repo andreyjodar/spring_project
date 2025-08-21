@@ -99,7 +99,7 @@ public class UserService implements UserDetailsService {
         return newUser;
     }
 
-    public UserResponse fromDto(User user) {
+    public UserResponse toDto(User user) {
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
         userResponse.setName(user.getName());

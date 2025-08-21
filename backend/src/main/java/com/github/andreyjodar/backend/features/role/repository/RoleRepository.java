@@ -1,4 +1,4 @@
-package com.github.andreyjodar.backend.features.user.repository;
+package com.github.andreyjodar.backend.features.role.repository;
 
 import java.util.Optional;
 import java.util.Set;
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.github.andreyjodar.backend.features.user.model.Role;
+import com.github.andreyjodar.backend.features.role.model.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
 

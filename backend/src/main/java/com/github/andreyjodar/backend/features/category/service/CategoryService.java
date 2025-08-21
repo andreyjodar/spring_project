@@ -1,5 +1,7 @@
 package com.github.andreyjodar.backend.features.category.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -11,7 +13,6 @@ import com.github.andreyjodar.backend.features.category.model.Category;
 import com.github.andreyjodar.backend.features.category.model.CategoryRequest;
 import com.github.andreyjodar.backend.features.category.model.CategoryResponse;
 import com.github.andreyjodar.backend.features.category.repository.CategoryRepository;
-import com.github.andreyjodar.backend.features.user.model.User;
 import com.github.andreyjodar.backend.features.user.service.UserService;
 
 @Service
@@ -26,7 +27,7 @@ public class CategoryService {
     @Autowired
     MessageSource messageSource;
 
-    public Category create(Category category, User authUser) {
+    public Category create(Category category) {
         if(categoryRepository.findByName(category.getName()).isPresent()) {
             throw new BusinessException("Esta categoria já existe");
         }
@@ -52,6 +53,10 @@ public class CategoryService {
                         new Object[] { id }, LocaleContextHolder.getLocale())));
     }
 
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
+    }
+
     public Category fromDto(CategoryRequest categoryRequest) {
         Category category = new Category();
         category.setName(categoryRequest.getName());
@@ -61,9 +66,10 @@ public class CategoryService {
 
     public CategoryResponse toDto(Category category) {
         CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setId(category.getId());
         categoryResponse.setName(category.getName());
         categoryResponse.setNote(category.getNote());
-        categoryResponse.setUserResponse(userService.fromDto(category.getAuthor()));
+        categoryResponse.setUserResponse(userService.toDto(category.getAuthor()));
         return categoryResponse;
     }
 }

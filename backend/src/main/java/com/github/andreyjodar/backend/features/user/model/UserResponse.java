@@ -2,6 +2,8 @@ package com.github.andreyjodar.backend.features.user.model;
 
 import java.util.Set;
 
+import com.github.andreyjodar.backend.features.role.model.Role;
+
 import lombok.Data;
 
 @Data
@@ -13,7 +15,7 @@ public class UserResponse {
     private Set<String> roles;
 
     public UserResponse() {
-        
+
     }
 
     public UserResponse(User user) {

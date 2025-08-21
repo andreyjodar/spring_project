@@ -1,4 +1,4 @@
-package com.github.andreyjodar.backend.features.user.controller;
+package com.github.andreyjodar.backend.features.role.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.andreyjodar.backend.features.user.model.Role;
-import com.github.andreyjodar.backend.features.user.service.RoleService;
+import com.github.andreyjodar.backend.features.role.model.Role;
+import com.github.andreyjodar.backend.features.role.service.RoleService;
 
 import jakarta.validation.Valid;
 

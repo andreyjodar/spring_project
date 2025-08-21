@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.andreyjodar.backend.core.model.BaseEntity;
 import com.github.andreyjodar.backend.features.feedback.model.Feedback;
+import com.github.andreyjodar.backend.features.role.model.Role;
 
 import jakarta.persistence.*;
 import jakarta.validation.Valid;

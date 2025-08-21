@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ public class Feedback extends BaseEntity {
     @Column(name = "grade", nullable = false)
     private Integer grade;
 
-    @NotNull @Size(max = 255)
+    @NotBlank @Size(max = 255)
     @Column(name = "comment", nullable = false, length = 255)
     private String comment;
 

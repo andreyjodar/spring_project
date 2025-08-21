@@ -1,4 +1,4 @@
-package com.github.andreyjodar.backend.shared.services;
+package com.github.andreyjodar.backend.features.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

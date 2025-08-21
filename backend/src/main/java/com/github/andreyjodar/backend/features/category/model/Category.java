@@ -24,7 +24,7 @@ import lombok.Setter;
 @Table(name="category")
 public class Category extends BaseEntity {
 
-    @NotBlank @Size(max = 100)
+    @NotBlank @Size(max = 50)
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 

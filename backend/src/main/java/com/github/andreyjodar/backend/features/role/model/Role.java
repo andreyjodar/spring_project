@@ -1,4 +1,4 @@
-package com.github.andreyjodar.backend.features.user.model;
+package com.github.andreyjodar.backend.features.role.model;
 
 import com.github.andreyjodar.backend.core.model.BaseEntity;
 

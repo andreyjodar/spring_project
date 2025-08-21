@@ -1,4 +1,4 @@
-package com.github.andreyjodar.backend.shared.controllers;
+package com.github.andreyjodar.backend.features.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.andreyjodar.backend.features.user.model.LoginRequest;
 import com.github.andreyjodar.backend.features.user.model.LoginResponse;
 import com.github.andreyjodar.backend.features.user.model.RegisterRequest;
+import com.github.andreyjodar.backend.features.user.service.AuthService;
 import com.github.andreyjodar.backend.features.user.service.UserService;
-import com.github.andreyjodar.backend.shared.services.AuthService;
 import com.github.andreyjodar.backend.features.user.model.User;
 
 @RestController
