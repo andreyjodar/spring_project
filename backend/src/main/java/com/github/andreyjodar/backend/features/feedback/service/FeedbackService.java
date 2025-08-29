@@ -49,7 +49,7 @@ public class FeedbackService {
     public void sendFeedbackEmail(Feedback feedback) {
         Context context = new Context();
         context.setVariable("nome", feedback.getAuthor());
-        emailService.emailTemplate(feedback.getRecipient().getName(), "Recebeu um Feedback", context, feedback.getComment());
+        emailService.sendTemplateEmail(feedback.getRecipient().getName(), "Recebeu um Feedback", context, feedback.getComment());
     }
 
     public void delete(Long id) {
@@ -75,13 +75,13 @@ public class FeedbackService {
         return feedback;
     }
 
-    public FeedbackResponse toDto(Feedback feedback) {
-        FeedbackResponse feedbackResponse = new FeedbackResponse();
-        feedbackResponse.setId(feedback.getId());
-        feedbackResponse.setGrade(feedback.getGrade());
-        feedbackResponse.setComment(feedback.getComment());
-        feedbackResponse.setAuthResponse(userService.toDto(feedback.getAuthor()));
-        feedbackResponse.setRecipientResponse(userService.toDto(feedback.getRecipient()));
-        return feedbackResponse;
-    } 
+    // public FeedbackResponse toDto(Feedback feedback) {
+    //     FeedbackResponse feedbackResponse = new FeedbackResponse();
+    //     feedbackResponse.setId(feedback.getId());
+    //     feedbackResponse.setGrade(feedback.getGrade());
+    //     feedbackResponse.setComment(feedback.getComment());
+    //     feedbackResponse.setAuthResponse(userService.toDto(feedback.getAuthor()));
+    //     feedbackResponse.setRecipientResponse(userService.toDto(feedback.getRecipient()));
+    //     return feedbackResponse;
+    // } 
 }

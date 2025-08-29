@@ -1,7 +1,8 @@
 package com.github.andreyjodar.backend.features.user.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -12,17 +13,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.andreyjodar.backend.core.model.BaseEntity;
+import com.github.andreyjodar.backend.features.auction.model.Auction;
+import com.github.andreyjodar.backend.features.bid.model.Bid;
+import com.github.andreyjodar.backend.features.category.model.Category;
 import com.github.andreyjodar.backend.features.feedback.model.Feedback;
 import com.github.andreyjodar.backend.features.role.model.Role;
+import com.github.andreyjodar.backend.features.role.model.RoleType;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -30,61 +28,103 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
 
-    @NotBlank @Size(max = 100)
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Email @NotBlank @Size(max = 100)
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
-
-    @NotBlank @Size(min = 8) @JsonIgnore
+ 
     @Column(name = "password", nullable = false)
+    @JsonIgnore
     private String password;
 
-    @Size(min = 6, max = 6)
-    @Column(name = "validity_code", unique = true, length = 6)
+    @Column(name = "validity_code", length = 6)
+    @JsonIgnore
     private String validityCode;
 
-    @NotNull
-    @FutureOrPresent
     @Column(name = "expiration_date")
-    private LocalDate expirationDate;
+    @JsonIgnore
+    private LocalDateTime expirationDate;
 
-    @NotNull
     @Column(name = "active", nullable = false)
-    private Boolean active;
+    private Boolean active = true;
 
-    @Valid
-    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Feedback> receivedFeedbacks = new HashSet<>();
-
-    @NotEmpty
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "user_role",
+        name = "users_roles",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "recipient")
+    private List<Feedback> receivedFeedbacks;
+
+    @OneToMany(mappedBy = "author")
+    private List<Feedback> writtenFeedbacks;
+
+    @OneToMany(mappedBy = "bidder")
+    private List<Bid> bids;
+
+    @OneToMany(mappedBy = "author")
+    private List<Category> categories;
+
+    @OneToMany(mappedBy = "auctioneer")
+    private List<Auction> auctions;
+
+    @JsonIgnore
+    public Boolean isAdmin() {
+        return roles.stream().anyMatch(role -> role.getType() == RoleType.ADMIN);
+    }
+
+    @JsonIgnore
+    public Boolean isSeller() {
+        return roles.stream().anyMatch(role -> role.getType() == RoleType.SELLER);
+    }
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName()))
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getType().name()))
             .collect(Collectors.toList());
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
     @Override
+    @JsonIgnore
     public String getUsername() {
         return email;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+        return true; 
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonLocked() {
+        return true; 
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isEnabled() {
+        return active;
     }
 }

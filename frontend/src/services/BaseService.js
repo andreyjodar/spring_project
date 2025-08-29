@@ -7,10 +7,10 @@ class BaseService {
         this.api = api;
     }
 
-async insert(data){
-    const response = await this.api.post(this.endPoint, data);
-    return response;
-}
+    async insert(data){
+        const response = await this.api.post(this.endPoint, data);
+        return response;
+    }
 
     async update(data) {
         const response = await this.api.put(this.endPoint, data);

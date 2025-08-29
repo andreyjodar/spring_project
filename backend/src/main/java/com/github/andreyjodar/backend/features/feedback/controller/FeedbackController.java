@@ -29,13 +29,13 @@ public class FeedbackController {
     @Autowired
     FeedbackService feedbackService;
 
-    @PostMapping
-    public ResponseEntity<FeedbackResponse> create(@Valid @RequestBody FeedbackRequest feedbackRequest, @AuthenticationPrincipal User authUser) {
-        Feedback feedback = feedbackService.fromDto(feedbackRequest);
-        feedback.setAuthor(authUser);
-        Feedback feedbackDb = feedbackService.create(feedback);
-        return ResponseEntity.ok(feedbackService.toDto(feedbackDb));
-    }
+    // @PostMapping
+    // public ResponseEntity<FeedbackResponse> create(@Valid @RequestBody FeedbackRequest feedbackRequest, @AuthenticationPrincipal User authUser) {
+    //     Feedback feedback = feedbackService.fromDto(feedbackRequest);
+    //     feedback.setAuthor(authUser);
+    //     Feedback feedbackDb = feedbackService.create(feedback);
+    //     return ResponseEntity.ok(feedbackService.toDto(feedbackDb));
+    // }
 
     @GetMapping
     public ResponseEntity<Page<Feedback>> findAll(Pageable pageable) {

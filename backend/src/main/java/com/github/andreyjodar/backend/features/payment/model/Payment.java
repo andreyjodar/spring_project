@@ -22,16 +22,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="payment")
+@Table(name="payments")
 public class Payment extends BaseEntity {
 
-    @NotNull
-    @OneToOne
-    @JoinColumn(name="id_auction", nullable = false , unique = true)
+    @NotNull @OneToOne
+    @JoinColumn(name="id_auction", nullable = false)
     private Auction auction;
 
-    @NotNull
-    @Positive
+    @NotNull @Positive
     @Column(name = "value", nullable = false)
     private Float value;
     

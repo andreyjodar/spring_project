@@ -23,9 +23,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtRequestFilter;
+    private final JwtAuthFilter jwtRequestFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtRequestFilter) {
+    public SecurityConfig(JwtAuthFilter jwtRequestFilter) {
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
@@ -44,9 +44,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/auth/**").permitAll()
-            .requestMatchers("/categories/**").hasRole("ADMIN")
-            /* .requestMatchers("/api/pessoa/**").hasRole("ADMIN") */
+                .requestMatchers("api/auth/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -24,7 +26,7 @@ public class BaseEntity {
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    @UpdateTimestamp
+    @UpdateTimestamp @JsonIgnore
     private LocalDateTime updatedAt;
 
 }

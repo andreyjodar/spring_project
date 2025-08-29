@@ -8,16 +8,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.andreyjodar.backend.core.exception.NotFoundException;
+import com.github.andreyjodar.backend.core.security.AuthUserProvider;
 import com.github.andreyjodar.backend.features.auction.model.Auction;
 import com.github.andreyjodar.backend.features.auction.repository.AuctionRepository;
+import com.github.andreyjodar.backend.shared.services.EmailService;
 
 @Service
 public class AuctionService {
     @Autowired
-    AuctionRepository auctionRepository;
+    private AuctionRepository auctionRepository;
 
     @Autowired
-    MessageSource messageSource;
+    private MessageSource messageSource;
+
+    @Autowired
+    private AuthUserProvider authUserProvider;
+
+    @Autowired
+    private EmailService emailService;
 
     public Auction create(Auction auction) {
         return auctionRepository.save(auction);
@@ -44,7 +52,7 @@ public class AuctionService {
 
     public Auction findById(Long id) {
         return auctionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(messageSource.getMessage("feedback.notfound",
+                .orElseThrow(() -> new NotFoundException(messageSource.getMessage("exception.auctions.notfound",
                         new Object[] { id }, LocaleContextHolder.getLocale())));
     }
 

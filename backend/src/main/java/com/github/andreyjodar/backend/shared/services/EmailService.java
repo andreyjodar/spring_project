@@ -22,7 +22,7 @@ public class EmailService {
     private TemplateEngine templateEngine;
 
     @Async
-    public void simpleEmail(String to, String subject, String message) {
+    public void sendSimpleEmail(String to, String subject, String message) {
         SimpleMailMessage simpleMail = new SimpleMailMessage();
         simpleMail.setTo(to);
         simpleMail.setSubject(subject);
@@ -31,7 +31,7 @@ public class EmailService {
     }
 
     @Async
-    public void emailTemplate(String to, String subject, Context context, String template) {
+    public void sendTemplateEmail(String to, String subject, Context context, String template) {
 
         String process = templateEngine.process(template, context);
 

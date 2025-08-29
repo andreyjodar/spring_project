@@ -4,9 +4,9 @@ import com.github.andreyjodar.backend.core.model.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +17,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "role")
+@Table(name = "roles")
 public class Role extends BaseEntity {
 
-    @NotBlank @Size(max = 50)
-    @Column(name = "name", nullable = false, unique = true, length = 50)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type",  unique = true)
+    private RoleType type;
 }

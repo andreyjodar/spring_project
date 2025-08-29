@@ -11,7 +11,7 @@ import com.github.andreyjodar.backend.features.user.repository.UserRepository;
 import java.util.NoSuchElementException;
 
 @Component
-public class AuthPersonProvider {
+public class AuthUserProvider {
 
     @Autowired
     private UserRepository userRepository;
@@ -22,10 +22,8 @@ public class AuthPersonProvider {
 
         if (principal instanceof UserDetails) {
             username = ((UserDetails) principal).getUsername();
-            System.out.println(username);
         } else {
             username = principal.toString();
-            System.out.println("AAA " + username);
         }
 
         return userRepository.findByEmail(username)
