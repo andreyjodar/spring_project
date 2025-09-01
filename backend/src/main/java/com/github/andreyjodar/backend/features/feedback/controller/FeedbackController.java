@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,42 +13,62 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.andreyjodar.backend.core.security.AuthUserProvider;
 import com.github.andreyjodar.backend.features.feedback.model.Feedback;
 import com.github.andreyjodar.backend.features.feedback.model.FeedbackRequest;
-import com.github.andreyjodar.backend.features.feedback.model.FeedbackResponse;
 import com.github.andreyjodar.backend.features.feedback.service.FeedbackService;
 import com.github.andreyjodar.backend.features.user.model.User;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/feedbacks")
+@RequestMapping("/api/feedbacks")
 public class FeedbackController {
 
     @Autowired
-    FeedbackService feedbackService;
+    private FeedbackService feedbackService;
 
-    // @PostMapping
-    // public ResponseEntity<FeedbackResponse> create(@Valid @RequestBody FeedbackRequest feedbackRequest, @AuthenticationPrincipal User authUser) {
-    //     Feedback feedback = feedbackService.fromDto(feedbackRequest);
-    //     feedback.setAuthor(authUser);
-    //     Feedback feedbackDb = feedbackService.create(feedback);
-    //     return ResponseEntity.ok(feedbackService.toDto(feedbackDb));
-    // }
+    @Autowired 
+    private AuthUserProvider authUserProvider;
+
+    @PostMapping
+    public ResponseEntity<Feedback> createFeedback(@Valid @RequestBody FeedbackRequest feedbackRequest) {
+        User authUser = authUserProvider.getAutheticatedUser();
+        return ResponseEntity.ok(feedbackService.createFeedback(authUser, feedbackRequest));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Feedback> updateFeedback(@PathVariable("id") Long id, @Valid @RequestBody FeedbackRequest feedbackRequest) {
+        User authUser = authUserProvider.getAutheticatedUser();
+        return ResponseEntity.ok(feedbackService.updateFeedback(id, authUser, feedbackRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteFeedback(@PathVariable("id") Long id) {
+        User authUser = authUserProvider.getAutheticatedUser();
+        feedbackService.deleteFeedback(id, authUser);
+        return ResponseEntity.ok("Feedback was Deleted Successfully!");
+    }
 
     @GetMapping
     public ResponseEntity<Page<Feedback>> findAll(Pageable pageable) {
         return ResponseEntity.ok(feedbackService.findAll(pageable));
     }
 
-    @PutMapping
-    public ResponseEntity<Feedback> update(@Valid @RequestBody Feedback feedback) {
-        return ResponseEntity.ok(feedbackService.update(feedback));
+    @GetMapping("/{id}")
+    public ResponseEntity<Feedback> getFeedbackById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(feedbackService.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
-        feedbackService.delete(id);
-        return ResponseEntity.ok("Excluído");
+    @GetMapping("/received")
+    public ResponseEntity<Page<Feedback>> getMyRecipientFeedback(Pageable pageable) {
+        User authUser = authUserProvider.getAutheticatedUser();
+        return ResponseEntity.ok(feedbackService.findByRecipient(authUser, pageable));
+    }
+
+    @GetMapping("/given")
+    public ResponseEntity<Page<Feedback>> getMyAuthorFeedback(Pageable pageable) {
+        User authUser = authUserProvider.getAutheticatedUser();
+        return ResponseEntity.ok(feedbackService.findByAuthor(authUser, pageable));
     }
 }

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -16,18 +16,14 @@ public class AuctionRequest {
     private String title;
     @NotBlank @Size(max = 200)
     private String description;
-    @NotBlank @Size(max = 255)
+    @Size(max = 255)
     private String expandedDescription;
     @NotNull
     private Long categoryId;
     @NotNull @FutureOrPresent
-    private LocalDateTime starDateTime;
+    private LocalDateTime startDateTime;
     @NotNull @Future
     private LocalDateTime endDateTime;
-    @NotBlank
-    private AuctionStatus status;
-    @PositiveOrZero
-    private Float incrementValue = 0F;
-    @NotNull @PositiveOrZero
+    @NotNull @Positive
     private Float minBid;
 }

@@ -86,8 +86,10 @@ public class Auction extends BaseEntity {
     private List<Picture> pictures;
 
     @OneToMany(mappedBy = "auction")
+    @JsonIgnore
     private List<Bid> bids;
 
     @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Payment payment;
 }

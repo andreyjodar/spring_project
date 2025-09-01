@@ -85,6 +85,11 @@ public class User extends BaseEntity implements UserDetails {
         return roles.stream().anyMatch(role -> role.getType() == RoleType.SELLER);
     }
 
+    @JsonIgnore
+    public Boolean isBuyer() {
+        return roles.stream().anyMatch(role -> role.getType() == RoleType.BUYER);
+    }
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
