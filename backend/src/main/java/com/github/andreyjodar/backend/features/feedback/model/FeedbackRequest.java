@@ -9,10 +9,13 @@ import lombok.Data;
 
 @Data
 public class FeedbackRequest {
-    @NotNull @Min(1) @Max(5)
+    @NotNull(message = "{validation.feedbacks.gradenull}") 
+    @Min(value = 1, message = "{validation.feedbacks.mingrade}") 
+    @Max(value = 5, message = "{validation.feedbacks.maxgrade}")
     private Integer grade;
-    @NotBlank @Size(max = 255)
+    @NotBlank(message = "{validation.feedbacks.commentnull}") 
+    @Size(max = 255, message = "{validation.feedbacks.commentsize}")
     private String comment;
-    @NotNull
+    @NotNull(message = "{validation.feedbacks.recipientidnull}")
     private Long recipientId;
 }

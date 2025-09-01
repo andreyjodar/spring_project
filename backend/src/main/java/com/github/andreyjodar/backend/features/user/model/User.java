@@ -20,8 +20,19 @@ import com.github.andreyjodar.backend.features.feedback.model.Feedback;
 import com.github.andreyjodar.backend.features.role.model.Role;
 import com.github.andreyjodar.backend.features.role.model.RoleType;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 @Getter
 @Setter
@@ -61,18 +72,23 @@ public class User extends BaseEntity implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "recipient")
+    @JsonIgnore
     private List<Feedback> receivedFeedbacks;
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnore
     private List<Feedback> writtenFeedbacks;
 
     @OneToMany(mappedBy = "bidder")
+    @JsonIgnore
     private List<Bid> bids;
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnore
     private List<Category> categories;
 
     @OneToMany(mappedBy = "auctioneer")
+    @JsonIgnore
     private List<Auction> auctions;
 
     @JsonIgnore

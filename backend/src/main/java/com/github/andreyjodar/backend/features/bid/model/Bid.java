@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,21 +20,17 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "bid")
+@Table(name = "bids")
 public class Bid extends BaseEntity {
 
-    @NotNull
-    @Positive
     @Column(name = "bid_value", nullable = false)
     private Float bidValue;
 
-    @NotNull
-    @ManyToOne 
+    @NotNull @ManyToOne 
     @JoinColumn(name = "id_bidder", nullable = false)
     private User bidder;
 
-    @NotNull
-    @ManyToOne
+    @NotNull @ManyToOne
     @JoinColumn(name = "id_auction", nullable = false)
     private Auction auction;
 }

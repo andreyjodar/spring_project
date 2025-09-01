@@ -55,11 +55,6 @@ public class FeedbackController {
         return ResponseEntity.ok(feedbackService.findAll(pageable));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Feedback> getFeedbackById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(feedbackService.findById(id));
-    }
-
     @GetMapping("/received")
     public ResponseEntity<Page<Feedback>> getMyRecipientFeedback(Pageable pageable) {
         User authUser = authUserProvider.getAutheticatedUser();
@@ -70,5 +65,10 @@ public class FeedbackController {
     public ResponseEntity<Page<Feedback>> getMyAuthorFeedback(Pageable pageable) {
         User authUser = authUserProvider.getAutheticatedUser();
         return ResponseEntity.ok(feedbackService.findByAuthor(authUser, pageable));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Feedback> getFeedbackById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(feedbackService.findById(id));
     }
 }

@@ -1,0 +1,142 @@
+.feedbackform-container {
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  min-height: 100vh; 
+  background: #f2f2f2;
+  padding: 1rem; 
+  box-sizing: border-box; 
+}
+
+.feedbackform-card {
+  border-radius: 12px;
+  overflow: hidden; 
+  width: 25rem; 
+  padding: 2rem; 
+}
+
+.feedbackform-header {
+  text-align: center; 
+}
+
+.feedbackform-title {
+  font-size: 2rem; 
+  color: #333;
+  margin-bottom: 0.5rem; 
+}
+
+.feedbackform-subtitle {
+  font-size: 1.1rem;
+  color: #666; 
+}
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; 
+  margin-top: 1rem; 
+  width: 100%; 
+}
+
+.feedback-input-group {
+  position: relative;
+  width: 100%;
+}
+
+.feedback-input {
+  width: 100% !important; 
+  box-sizing: border-box; 
+}
+
+.feedback-input-group .p-password {
+  width: 100% !important;
+}
+
+.feedback-input-group .p-password input {
+  width: 100% !important;
+  box-sizing: border-box; 
+}
+
+.feedback-label {
+  position: absolute;
+  left: 0.75rem;
+  top: -0.75rem;
+  background: white;
+  padding: 0 0.25rem;
+  font-size: 0.85rem;
+  color: #555;
+  transition: all 0.2s ease; 
+  pointer-events: none; 
+  z-index: 1; 
+}
+
+.p-float-label input:focus ~ label,
+.p-float-label input.p-filled ~ label,
+.p-float-label .p-password input:focus ~ label, 
+.p-float-label .p-password input.p-filled ~ label { 
+  top: -0.75rem;
+  font-size: 0.85rem;
+  color: #6366f1; 
+}
+
+.feedbackform-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; 
+  margin-top: 1rem; 
+}
+
+.feedbackform-button {
+  width: 100%; 
+  padding: 0.75rem 1rem; 
+  font-size: 1.1rem;
+  border-radius: 8px;
+}
+
+.feedbackform-button-primary {
+  background: linear-gradient(to right, #6366f1, #8b5cf6) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.feedbackform-button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.feedbackform-button-secondary {
+  background-color: transparent !important;
+  border: 1px solid #6c757d !important;
+  color: #6c757d !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.feedbackform-button-secondary:hover {
+  background-color: #e9ecef !important;
+  transform: translateY(-2px);
+}
+
+.feedbackform-button-help {
+  background-color: transparent !important;
+  border: none !important;
+  color: #0d6efd !important;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.feedbackform-button-help:hover {
+  text-decoration: underline;
+  color: #0a58ca !important;
+}
+
+.p-float-label label {
+  color: #555;
+  font-size: 1.1rem; 
+}
+
+.p-inputtext:focus {
+  border-color: #6366f1 !important; 
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; 
+}

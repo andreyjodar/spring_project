@@ -21,11 +21,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,11 +35,9 @@ import lombok.Setter;
 @Table(name="auctions")
 public class Auction extends BaseEntity {
 
-    @NotBlank @Size(max = 100)
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 
-    @NotBlank @Size(max = 200)
     @Column(name = "description", nullable = false, length = 200)
     private String description;
 
@@ -58,11 +52,9 @@ public class Auction extends BaseEntity {
     @JoinColumn(name="id_category", nullable = false)
     private Category category;
 
-    @NotNull
     @Column(name = "start_date", nullable = false)
     private LocalDateTime startDateTime;
 
-    @NotNull
     @Column(name = "end_datetime", nullable = false)
     private LocalDateTime endDateTime;
 
@@ -70,15 +62,12 @@ public class Auction extends BaseEntity {
     @Column(name = "status", nullable = false)
     private AuctionStatus status;
 
-    @Size(max = 150)
     @Column(name = "note", length = 150)
     private String note;
 
-    @NotNull @PositiveOrZero
     @Column(name = "increment_value", nullable = false)
     private Float incrementValue;
 
-    @NotNull @Positive
     @Column(name = "min_bid", nullable = false)
     private Float minBid;
 

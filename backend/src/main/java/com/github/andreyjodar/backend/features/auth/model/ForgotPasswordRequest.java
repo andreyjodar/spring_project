@@ -7,6 +7,8 @@ import lombok.Data;
 
 @Data
 public class ForgotPasswordRequest {
-    @NotBlank @Size(max = 100) @Email
+    @NotBlank(message = "{validation.users.emailblank}") 
+    @Size(max = 100, message = "{validation.users.maxemailsize}") 
+    @Email(message = "{validation.users.invalidemail}")
     private String email;
 }

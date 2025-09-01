@@ -11,12 +11,17 @@ import lombok.Data;
 
 @Data
 public class RegisterRequest {
-    @NotBlank @Size(max = 100)
+    @NotBlank(message = "{validation.users.nameblank}") 
+    @Size(max = 100, message = "{validation.users.maxnamesize}")
     private String name;
-    @NotBlank @Size(max = 100) @Email
+    @NotBlank(message = "{validation.users.emailblank}") 
+    @Size(max = 100, message = "{validation.users.maxemailsize}") 
+    @Email(message = "{validation.users.invalidemail}")
     private String email;
-    @NotBlank @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$")
+    @NotBlank(message = "{validation.users.passwblank}") 
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$",
+    message = "{validation.users.invalidpassw}")
     private String password;
-    @NotEmpty
+    @NotEmpty(message = "{validation.users.rolesempty}")
     private Set<String> roles;
 }

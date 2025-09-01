@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 public class AuthResponse {
     private String accessToken;
-    private UserResponse user;
+    private UserResponse userResponse;
 
     public AuthResponse(String accessToken, UserResponse userResponse) {
         this.accessToken = accessToken;
-        this.user = userResponse;
+        this.userResponse = userResponse;
     }
 }

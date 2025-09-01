@@ -11,6 +11,7 @@ import com.github.andreyjodar.backend.features.auth.model.ChangePasswordRequest;
 import com.github.andreyjodar.backend.features.auth.model.ForgotPasswordRequest;
 import com.github.andreyjodar.backend.features.auth.model.LoginRequest;
 import com.github.andreyjodar.backend.features.auth.model.RegisterRequest;
+import com.github.andreyjodar.backend.core.model.ApiResponse;
 import com.github.andreyjodar.backend.features.auth.model.AuthResponse;
 import com.github.andreyjodar.backend.features.auth.service.AuthService;
 
@@ -34,14 +35,14 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody @Valid ForgotPasswordRequest forgotPasswordRequest) {
+    public ResponseEntity<ApiResponse> forgotPassword(@RequestBody @Valid ForgotPasswordRequest forgotPasswordRequest) {
         authService.forgotPassword(forgotPasswordRequest);
-        return ResponseEntity.ok("Reset Password Code was Invited by Email");
+        return ResponseEntity.ok(new ApiResponse("Reset Password Code was Invited by Email"));
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<ApiResponse> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         authService.changePassword(changePasswordRequest);
-        return ResponseEntity.ok("User Password was Changed");
+        return ResponseEntity.ok(new ApiResponse("User Password was Changed"));
     }
 }

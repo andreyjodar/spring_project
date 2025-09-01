@@ -1,6 +1,5 @@
 package com.github.andreyjodar.backend.features.category.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.andreyjodar.backend.core.model.BaseEntity;
 import com.github.andreyjodar.backend.features.user.model.User;
 
@@ -9,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,8 +28,7 @@ public class Category extends BaseEntity {
     @Column(name = "note", nullable = false, length = 150)
     private String note;
     
-    @ManyToOne
+    @NotNull @ManyToOne
     @JoinColumn(name="id_author", nullable = false)
-    @JsonIgnore
     private User author;
 }

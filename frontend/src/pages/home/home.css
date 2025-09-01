@@ -1,0 +1,9 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #f2f2f2;
+    justify-content: start;
+    align-items: center;
+    padding-top: 60px;
+    height: 110vh;
+}

@@ -6,8 +6,10 @@ import lombok.Data;
 
 @Data
 public class CategoryRequest {
-    @NotBlank @Size(max = 50)
+    @NotBlank(message = "{validation.categories.nameblank}") 
+    @Size(max = 50, message = "{validation.categories.maxnamesize}")
     private String name;
-    @NotBlank @Size(max = 150)
+    @NotBlank(message = "{validation.categories.notenull}") 
+    @Size(max = 150, message = "{validation.categories.maxnotesize}")
     private String note;
 }

@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.andreyjodar.backend.core.exception.BusinessException;
-import com.github.andreyjodar.backend.core.exception.ForbiddenException;
 import com.github.andreyjodar.backend.core.exception.NotFoundException;
 import com.github.andreyjodar.backend.features.auction.model.Auction;
 import com.github.andreyjodar.backend.features.auction.service.AuctionService;
@@ -39,7 +38,7 @@ public class BidService {
         Bid bid = bidMapper.fromDto(bidRequest);
         Auction auction = auctionService.findById(bidRequest.getAuctionid());
         if(!authUser.isBuyer()) {
-            throw new ForbiddenException(messageSource.getMessage("exception.bids.forbidden",
+            throw new BusinessException(messageSource.getMessage("exception.bids.notbuyer",
                 new Object[] { authUser.getEmail() }, LocaleContextHolder.getLocale()));
         }
 
@@ -51,7 +50,7 @@ public class BidService {
         bid.setBidder(authUser);
         if(!isValidTerm(auction)) {
             throw new BusinessException(messageSource.getMessage("exception.bids.invalidterm",
-                new Object[] { authUser.getEmail() }, LocaleContextHolder.getLocale()));
+                new Object[] { auction.getStartDateTime(), auction.getEndDateTime() }, LocaleContextHolder.getLocale()));
         }
 
         if(!isValidPrice(auction, bid)) {

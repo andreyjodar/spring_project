@@ -1,4 +1,4 @@
-import api from "../configs/axiosConfig";
+import api from "../config/AxiosConfig";
 
 class BaseService {
 
@@ -12,8 +12,8 @@ class BaseService {
         return response;
     }
 
-    async update(data) {
-        const response = await this.api.put(this.endPoint, data);
+    async update(id, data) {
+        const response = await this.api.put(`${this.endPoint}/${id}`, data);
         return response;
     }
 
@@ -22,16 +22,19 @@ class BaseService {
         return response;
     }
 
-    async findAll(){
-        console.log("AAAA")
+    async findById(id){
+        const response = await this.api.get(`${this.endPoint}/${id}`);
+        return response;
+    }
+
+    async findAll(params = {}){
         try {
-            const response = await this.api.get(this.endPoint);
+            const response = await this.api.get(this.endPoint, { params });
             return response;
         } catch (error) {
             console.log(error);
         }
-      
     }
-
 }
+
 export default BaseService;

@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class EditUserRequest {
-    @NotBlank @Size(max = 100)
+    @NotBlank(message = "{validation.users.nameblank}")
+    @Size(max = 100, message = "{validation.users.namesize}")
     private String name;
 }

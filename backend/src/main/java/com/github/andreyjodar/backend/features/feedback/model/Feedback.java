@@ -8,11 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,25 +19,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="feedback")
+@Table(name="feedbacks")
 public class Feedback extends BaseEntity {
 
-    @NotNull
-    @Min(value = 1) @Max(value = 5)
     @Column(name = "grade", nullable = false)
     private Integer grade;
 
-    @NotBlank @Size(max = 255)
     @Column(name = "comment", nullable = false, length = 255)
     private String comment;
 
-    @NotNull
-    @ManyToOne
+    @NotNull @ManyToOne
     @JoinColumn(name = "id_author", nullable = false)
     private User author;
     
-    @NotNull
-    @ManyToOne
+    @NotNull @ManyToOne
     @JoinColumn(name = "id_recipient", nullable = false)
     private User recipient;
 }

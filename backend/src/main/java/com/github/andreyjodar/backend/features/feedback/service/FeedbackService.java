@@ -70,8 +70,8 @@ public class FeedbackService {
 
     public Feedback findById(Long id) {
         return feedbackRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(messageSource.getMessage("feedback.notfound",
-                        new Object[] { id }, LocaleContextHolder.getLocale())));
+            .orElseThrow(() -> new NotFoundException(messageSource.getMessage("exception.feedbacks.notfound",
+                new Object[] { id }, LocaleContextHolder.getLocale())));
     }
 
     public Page<Feedback> findByAuthor(User author, Pageable pageable) {
