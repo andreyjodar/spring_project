@@ -2,11 +2,13 @@ package com.github.andreyjodar.backend.features.payment.model;
 
 import com.github.andreyjodar.backend.core.model.BaseEntity;
 import com.github.andreyjodar.backend.features.auction.model.Auction;
+import com.github.andreyjodar.backend.features.user.model.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +34,10 @@ public class Payment extends BaseEntity {
     @NotNull @Positive
     @Column(name = "value", nullable = false)
     private Float value;
+
+    @NotNull @ManyToOne
+    @JoinColumn(name="id_buyer", nullable = false)
+    private User buyer;
     
     @NotBlank @Size(max = 100)
     @Column(name = "status", nullable = false, length = 100)

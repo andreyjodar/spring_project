@@ -40,6 +40,11 @@ public class AuctionService {
                 new Object[] { authUser.getEmail() }, LocaleContextHolder.getLocale()));
         }
 
+        if(!isValidPeriod(auctionRequest.getStartDateTime(), auctionRequest.getEndDateTime())) {
+            throw new IllegalArgumentException(messageSource.getMessage("exception.auctions.invalidperiod",
+                new Object[] {auctionRequest.getStartDateTime(), auctionRequest.getEndDateTime()}, LocaleContextHolder.getLocale()));
+        }
+
         Auction auction = auctionMapper.fromDto(auctionRequest);
         auction.setCategory(categoryService.findById(auctionRequest.getCategoryId()));
         if(!authUser.isAdmin() && !auction.getCategory().getAuthor().equals(authUser)) {
@@ -48,6 +53,7 @@ public class AuctionService {
         }
 
         auction.setAuctioneer(authUser);
+        auction.setStatus(AuctionStatus.ACTIVE);
         return auctionRepository.save(auction);
     }
 
@@ -57,6 +63,11 @@ public class AuctionService {
                 new Object[] { authUser.getEmail() }, LocaleContextHolder.getLocale()));
         }
 
+        if(!isValidPeriod(auctionRequest.getStartDateTime(), auctionRequest.getEndDateTime())) {
+            throw new IllegalArgumentException(messageSource.getMessage("exception.auctions.invalidperiod",
+                new Object[] {auctionRequest.getStartDateTime(), auctionRequest.getEndDateTime()}, LocaleContextHolder.getLocale()));
+        }
+
         Auction auction = findById(id);
         if(!authUser.isAdmin() && !auction.getAuctioneer().equals(authUser)) {
             throw new BusinessException(messageSource.getMessage("exception.auctions.notowner",
@@ -64,16 +75,14 @@ public class AuctionService {
         }
 
         Category category = categoryService.findById(auctionRequest.getCategoryId());
-        if(!authUser.isAdmin() && !category.getAuthor().equals(authUser)) {
-            throw new BusinessException(messageSource.getMessage("exception.categories.notowner",
-                new Object[] { authUser.getEmail() }, LocaleContextHolder.getLocale()));
-        }
         
-        updateTextFields(auction, auctionRequest);
+        auction.setTitle(auctionRequest.getTitle());
+        auction.setDescription(auctionRequest.getDescription());
+        auction.setExpandedDescription(auctionRequest.getExpandedDescription());
         auction.setCategory(category);
+        auction.setStatus(AuctionStatus.valueOf(auctionRequest.getStatus()));
         auction.setStartDateTime(auctionRequest.getStartDateTime());
         auction.setEndDateTime(auctionRequest.getEndDateTime());
-        auction.setStatus(updateStatus(auction.getStartDateTime(), auction.getEndDateTime()));
         return auctionRepository.save(auction);
     }
 
@@ -102,36 +111,6 @@ public class AuctionService {
         Float offsetValue = newPrice - auction.getMinBid();
         auction.setIncrementValue(offsetValue);
         return auctionRepository.save(auction);
-    }
-
-    public Auction updateStatus(Auction auction) {
-        AuctionStatus auctionStatus = updateStatus(auction.getStartDateTime(), auction.getEndDateTime());
-        auction.setStatus(auctionStatus);
-        return auctionRepository.save(auction);
-    }
-
-    private AuctionStatus updateStatus(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        if(!isValidPeriod(startDateTime, endDateTime)) {
-            throw new IllegalArgumentException(messageSource.getMessage("exception.auctions.ivalidperiod",
-                new Object[] { startDateTime, endDateTime }, LocaleContextHolder.getLocale()));
-        }
-
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        if(startDateTime.isAfter(currentDateTime)) {
-            return AuctionStatus.OPEN;
-        }
-
-        if(startDateTime.isBefore(currentDateTime) && endDateTime.isAfter(currentDateTime)) {
-            return AuctionStatus.ANALYSING;
-        }
-
-        return AuctionStatus.CLOSED;
-    }
-
-    private void updateTextFields(Auction auction, AuctionRequest auctionRequest) {
-        auction.setTitle(auctionRequest.getTitle());
-        auction.setDescription(auctionRequest.getDescription());
-        auction.setExpandedDescription(auctionRequest.getExpandedDescription());
     }
 
     private Boolean isValidPeriod(LocalDateTime startDateTime, LocalDateTime endDateTime) {

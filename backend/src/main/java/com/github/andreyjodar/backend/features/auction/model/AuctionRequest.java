@@ -22,6 +22,8 @@ public class AuctionRequest {
     private String expandedDescription;
     @NotNull(message = "{validation.auctions.categoryidnull}")
     private Long categoryId;
+    @NotBlank
+    private String status;
     @NotNull(message = "{validation.auctions.startdatenull}") 
     @FutureOrPresent(message = "{validation.auctions.startpresorfuture}")
     private LocalDateTime startDateTime;

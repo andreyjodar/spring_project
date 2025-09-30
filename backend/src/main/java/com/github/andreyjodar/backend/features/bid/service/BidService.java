@@ -79,6 +79,12 @@ public class BidService {
                 new Object[] { id }, LocaleContextHolder.getLocale())));
     }
 
+    public Bid findMaxBidByAuction(Long auctionId) {
+        return bidRepository.findTopByAuctionIdOrderByBidValueDesc(auctionId)
+            .orElseThrow(() -> new NotFoundException(messageSource.getMessage("exception.bids.notfound",
+                new Object[] { auctionId }, LocaleContextHolder.getLocale())));
+    }
+
     public Page<Bid> findByBidder(User bidder, Pageable pageable) {
         return bidRepository.findByBidder(bidder, pageable);
     }

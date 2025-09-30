@@ -74,11 +74,4 @@ public class Auction extends BaseEntity {
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Picture> pictures;
 
-    @OneToMany(mappedBy = "auction")
-    @JsonIgnore
-    private List<Bid> bids;
-
-    @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Payment payment;
 }
