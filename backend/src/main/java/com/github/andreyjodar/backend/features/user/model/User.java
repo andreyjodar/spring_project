@@ -2,21 +2,18 @@ package com.github.andreyjodar.backend.features.user.model;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.andreyjodar.backend.core.model.BaseEntity;
-import com.github.andreyjodar.backend.features.auction.model.Auction;
-import com.github.andreyjodar.backend.features.bid.model.Bid;
-import com.github.andreyjodar.backend.features.category.model.Category;
-import com.github.andreyjodar.backend.features.feedback.model.Feedback;
 import com.github.andreyjodar.backend.features.role.model.Role;
 import com.github.andreyjodar.backend.features.role.model.RoleType;
 
@@ -26,7 +23,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +36,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE id = ?")
+@SQLRestriction("deleted = false") 
 public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "name", nullable = false, length = 100)
@@ -63,6 +61,10 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "active", nullable = false)
     private Boolean active = true;
 
+    @Column(name = "deleted", nullable = false)
+    @JsonIgnore
+    private Boolean deleted = false;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "users_roles",
@@ -70,26 +72,6 @@ public class User extends BaseEntity implements UserDetails {
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
-
-    @OneToMany(mappedBy = "recipient")
-    @JsonIgnore
-    private List<Feedback> receivedFeedbacks;
-
-    @OneToMany(mappedBy = "author")
-    @JsonIgnore
-    private List<Feedback> writtenFeedbacks;
-
-    @OneToMany(mappedBy = "bidder")
-    @JsonIgnore
-    private List<Bid> bids;
-
-    @OneToMany(mappedBy = "author")
-    @JsonIgnore
-    private List<Category> categories;
-
-    @OneToMany(mappedBy = "auctioneer")
-    @JsonIgnore
-    private List<Auction> auctions;
 
     @JsonIgnore
     public Boolean isAdmin() {

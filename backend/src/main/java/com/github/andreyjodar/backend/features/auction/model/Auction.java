@@ -3,6 +3,9 @@ package com.github.andreyjodar.backend.features.auction.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.andreyjodar.backend.core.model.BaseEntity;
 import com.github.andreyjodar.backend.features.bid.model.Bid;
@@ -16,6 +19,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -33,7 +37,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name="auctions")
+@SQLDelete(sql = "UPDATE auctions SET deleted = true WHERE id = ?")
+@SQLRestriction("deleted = false")
 public class Auction extends BaseEntity {
+
+    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Picture> pictures;
 
     @Column(name = "title", nullable = false, length = 100)
     private String title;
@@ -62,8 +71,9 @@ public class Auction extends BaseEntity {
     @Column(name = "status", nullable = false)
     private AuctionStatus status;
 
-    @Column(name = "note", length = 150)
-    private String note;
+    @Column(name = "deleted", nullable = false)
+    @JsonIgnore
+    private Boolean deleted = false;
 
     @Column(name = "increment_value", nullable = false)
     private Float incrementValue;
@@ -71,7 +81,11 @@ public class Auction extends BaseEntity {
     @Column(name = "min_bid", nullable = false)
     private Float minBid;
 
-    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Picture> pictures;
+    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Bid> bids;
 
+    @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore 
+    private Payment payment;
 }

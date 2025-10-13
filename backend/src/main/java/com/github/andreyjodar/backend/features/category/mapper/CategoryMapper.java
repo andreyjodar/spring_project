@@ -14,4 +14,10 @@ public class CategoryMapper {
         category.setNote(categoryRequest.getNote());
         return category;
     }
+
+    public Category updateCategory(Category category, CategoryRequest categoryRequest) {
+        category.setName(categoryRequest.getName());
+        category.setNote(categoryRequest.getNote());
+        return category;
+    }
 }

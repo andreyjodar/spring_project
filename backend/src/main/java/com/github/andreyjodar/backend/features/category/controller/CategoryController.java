@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.andreyjodar.backend.core.security.AuthUserProvider;
 import com.github.andreyjodar.backend.features.category.model.Category;
+import com.github.andreyjodar.backend.features.category.model.CategoryFilterRequest;
 import com.github.andreyjodar.backend.features.category.model.CategoryRequest;
 import com.github.andreyjodar.backend.features.category.service.CategoryService;
 import com.github.andreyjodar.backend.features.user.model.User;
@@ -27,7 +28,6 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private AuthUserProvider authUserProvider;
 
@@ -56,13 +56,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Category>> getAllCategories(Pageable pageable) {
-        return ResponseEntity.ok(categoryService.findAll(pageable));
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<Page<Category>> getMyCategories(Pageable pageable) {
-        User user = authUserProvider.getAutheticatedUser();
-        return ResponseEntity.ok(categoryService.findByUser(user, pageable));
+    public ResponseEntity<Page<Category>> getFilteredCategories(CategoryFilterRequest filter, Pageable pageable) {
+        return ResponseEntity.ok(categoryService.findFiltered(filter, pageable));
     }
 }
