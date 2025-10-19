@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.andreyjodar.backend.core.model.BaseEntity;
 import com.github.andreyjodar.backend.features.role.model.Role;
-import com.github.andreyjodar.backend.features.role.model.RoleType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -75,23 +74,23 @@ public class User extends BaseEntity implements UserDetails {
 
     @JsonIgnore
     public Boolean isAdmin() {
-        return roles.stream().anyMatch(role -> role.getType() == RoleType.ADMIN);
+        return roles.stream().anyMatch(role -> role.getType().equals("ADMIN"));
     }
 
     @JsonIgnore
     public Boolean isSeller() {
-        return roles.stream().anyMatch(role -> role.getType() == RoleType.SELLER);
+        return roles.stream().anyMatch(role -> role.getType().equals("SELLER"));
     }
 
     @JsonIgnore
     public Boolean isBuyer() {
-        return roles.stream().anyMatch(role -> role.getType() == RoleType.BUYER);
+        return roles.stream().anyMatch(role -> role.getType().equals("BUYER"));
     }
 
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getType().name()))
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getType()))
             .collect(Collectors.toList());
     }
 

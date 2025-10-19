@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.andreyjodar.backend.core.exception.ForbiddenException;
 import com.github.andreyjodar.backend.core.exception.NotFoundException;
+import com.github.andreyjodar.backend.features.auction.repository.AuctionRepository;
 import com.github.andreyjodar.backend.features.category.mapper.CategoryMapper;
 import com.github.andreyjodar.backend.features.category.model.Category;
 import com.github.andreyjodar.backend.features.category.model.CategoryFilterRequest;
@@ -26,6 +27,8 @@ public class CategoryService {
     MessageSource messageSource;
     @Autowired
     private CategoryMapper categoryMapper;
+    @Autowired
+    private AuctionRepository auctionRepository;
 
     public Category createCategory(User authUser, CategoryRequest categoryRequest) {
         validateOperation(authUser);
@@ -36,13 +39,13 @@ public class CategoryService {
     public Category updateCategory(Long id, User authUser, CategoryRequest categoryRequest) {     
         validateOperation(authUser);   
         Category category = findById(id);
-        category = categoryMapper.updateCategory(category, categoryRequest);
         return categoryRepository.save(category);
     }
 
     public void deleteCategory(Long id, User authUser) {
         validateOperation(authUser);
         Category category = findById(id);
+        validateDelete(category);
         categoryRepository.delete(category);
     }
 
@@ -61,6 +64,13 @@ public class CategoryService {
         if(!authUser.isAdmin()) {
             throw new ForbiddenException(messageSource.getMessage("exception.categories.forbidden",
                 new Object[] { authUser.getName() }, LocaleContextHolder.getLocale()));
+        }
+    }
+
+    private void validateDelete(Category category) {
+        if(auctionRepository.existsByCategoryAndDeletedFalse(category)) {
+            throw new ForbiddenException(messageSource.getMessage("exception.categories.notdelete",
+                new Object[] { category.getName() }, LocaleContextHolder.getLocale())); 
         }
     }
 }

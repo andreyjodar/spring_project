@@ -22,13 +22,10 @@ public class AuthService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private UserMapper userMapper;
 

@@ -20,12 +20,14 @@ import com.github.andreyjodar.backend.features.auction.model.AuctionCreateReques
 import com.github.andreyjodar.backend.features.auction.model.AuctionEditRequest;
 import com.github.andreyjodar.backend.features.auction.model.AuctionStatus;
 import com.github.andreyjodar.backend.features.auction.repository.AuctionRepository;
+import com.github.andreyjodar.backend.features.bid.repository.BidRepository;
 import com.github.andreyjodar.backend.features.category.model.Category;
 import com.github.andreyjodar.backend.features.category.service.CategoryService;
 import com.github.andreyjodar.backend.features.user.model.User;
 
 @Service
 public class AuctionService {
+
     @Autowired
     private AuctionRepository auctionRepository;
     @Autowired 
@@ -34,6 +36,8 @@ public class AuctionService {
     private AuctionMapper auctionMapper;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private BidRepository bidRepository;
 
     public Auction createAuction(User authUser, AuctionCreateRequest auctionRequest) {
         validatePeriod(auctionRequest.getStartDateTime(), auctionRequest.getEndDateTime());
@@ -73,6 +77,7 @@ public class AuctionService {
     public void deleteAuction(Long id, User authUser) {
         Auction auction = findById(id);
         validateOperation(authUser, auction);
+        validateDelete(auction);
         auctionRepository.delete(auction); 
     }
 
@@ -108,7 +113,7 @@ public class AuctionService {
 
     private void validatePeriod(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         if(startDateTime.isAfter(endDateTime)) {
-            throw new IllegalArgumentException(messageSource.getMessage("exception.auctions.invalidperiod",
+            throw new BusinessException(messageSource.getMessage("exception.auctions.invalidperiod",
                 new Object[] {startDateTime, endDateTime}, LocaleContextHolder.getLocale()));
         }
     }
@@ -127,5 +132,12 @@ public class AuctionService {
     private void fillComplexAttributes(Auction auction, Category category, User auctioneer) {
         auction.setCategory(category);
         auction.setAuctioneer(auctioneer);
+    }
+
+    private void validateDelete(Auction auction) {
+        if(bidRepository.existsByAuctionAndDeletedFalse(auction)) {
+            throw new BusinessException(messageSource.getMessage("exception.auctions.notDelete",
+                new Object[] { auction.getTitle() }, LocaleContextHolder.getLocale()));
+        }
     }
 }

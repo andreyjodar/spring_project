@@ -2,6 +2,7 @@ package com.github.andreyjodar.backend.features.user.service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -20,6 +21,7 @@ import com.github.andreyjodar.backend.core.exception.BusinessException;
 import com.github.andreyjodar.backend.core.exception.ForbiddenException;
 import com.github.andreyjodar.backend.core.exception.NotFoundException;
 import com.github.andreyjodar.backend.features.auth.model.RegisterRequest;
+import com.github.andreyjodar.backend.features.role.service.RoleService;
 import com.github.andreyjodar.backend.features.user.mapper.UserMapper;
 import com.github.andreyjodar.backend.features.user.model.EditUserRequest;
 import com.github.andreyjodar.backend.features.user.model.User;
@@ -34,27 +36,22 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private RoleService roleService;
     @Autowired
     private UserMapper userMapper;
-
     @Autowired
     private MessageSource messageSource;
-
     @Autowired
     private EmailService emailService;
-
     @Autowired @Lazy
     private PasswordEncoder passwordEncoder;
 
-    public User createUser(RegisterRequest userRequest) {
-        if(userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
-            throw new BusinessException(messageSource.getMessage("exception.users.existemail",
-                new Object[] { userRequest.getEmail() }, LocaleContextHolder.getLocale()));
-        }
-
+    public User createUser(User authUser, RegisterRequest userRequest) {
+        validateEmail(userRequest.getEmail());
         User user = userMapper.fromDto(userRequest);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        String encode = passwordEncoder.encode(userRequest.getPassword());
+        user.setPassword(encode);
         sendRegisterSuccess(user);
         return userRepository.save(user);
     }
@@ -149,6 +146,14 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrada"));
+            .orElseThrow(() -> new UsernameNotFoundException(messageSource.getMessage("exception.users.notfound",
+                new Object[] { username }, LocaleContextHolder.getLocale())));
+    }
+
+    private void validateEmail(String email) {
+        if(userRepository.findByEmail(email).isPresent()) {
+            throw new BusinessException(messageSource.getMessage("exception.users.existemail",
+                new Object[] { email }, LocaleContextHolder.getLocale()));
+        }
     }
 }

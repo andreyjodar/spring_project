@@ -4,7 +4,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.github.andreyjodar.backend.features.role.model.Role;
-import com.github.andreyjodar.backend.features.role.model.RoleType;
 import com.github.andreyjodar.backend.features.role.repository.RoleRepository;
 
 @Component
@@ -18,21 +17,21 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (roleRepository.findByType(RoleType.BUYER).isEmpty()) {
+        if (roleRepository.findByType("ADMIN").isEmpty()) {
             Role buyerProfile = new Role();
-            buyerProfile.setType(RoleType.BUYER);
+            buyerProfile.setType("ADMIN");
             roleRepository.save(buyerProfile);
         }
 
-        if (roleRepository.findByType(RoleType.SELLER).isEmpty()) {
+        if (roleRepository.findByType("SELLER").isEmpty()) {
             Role sellerProfile = new Role();
-            sellerProfile.setType(RoleType.SELLER);
+            sellerProfile.setType("SELLER");
             roleRepository.save(sellerProfile);
         }
 
-        if (roleRepository.findByType(RoleType.ADMIN).isEmpty()) {
+        if (roleRepository.findByType("BUYER").isEmpty()) {
             Role adminProfile = new Role();
-            adminProfile.setType(RoleType.ADMIN);
+            adminProfile.setType("BUYER");
             roleRepository.save(adminProfile);
         }
     }
