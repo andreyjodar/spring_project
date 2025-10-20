@@ -3,35 +3,35 @@ package com.github.andreyjodar.backend.core.bootstrap;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import com.github.andreyjodar.backend.features.role.model.Role;
-import com.github.andreyjodar.backend.features.role.repository.RoleRepository;
+import com.github.andreyjodar.backend.models.entities.Profile;
+import com.github.andreyjodar.backend.repositories.ProfileRepository;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
     
-    private final RoleRepository roleRepository;
+    private final ProfileRepository roleRepository;
 
-    public DataInitializer(RoleRepository roleRepository) {
+    public DataInitializer(ProfileRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        if (roleRepository.findByType("ADMIN").isEmpty()) {
-            Role buyerProfile = new Role();
-            buyerProfile.setType("ADMIN");
+        if (roleRepository.findByRole("ADMIN").isEmpty()) {
+            Profile buyerProfile = new Profile();
+            buyerProfile.setRole("ADMIN");
             roleRepository.save(buyerProfile);
         }
 
-        if (roleRepository.findByType("SELLER").isEmpty()) {
-            Role sellerProfile = new Role();
-            sellerProfile.setType("SELLER");
+        if (roleRepository.findByRole("SELLER").isEmpty()) {
+            Profile sellerProfile = new Profile();
+            sellerProfile.setRole("SELLER");
             roleRepository.save(sellerProfile);
         }
 
-        if (roleRepository.findByType("BUYER").isEmpty()) {
-            Role adminProfile = new Role();
-            adminProfile.setType("BUYER");
+        if (roleRepository.findByRole("BUYER").isEmpty()) {
+            Profile adminProfile = new Profile();
+            adminProfile.setRole("BUYER");
             roleRepository.save(adminProfile);
         }
     }

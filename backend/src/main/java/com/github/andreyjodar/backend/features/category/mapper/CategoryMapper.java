@@ -1,23 +1,23 @@
-package com.github.andreyjodar.backend.features.category.mapper;
+// package com.github.andreyjodar.backend.features.category.mapper;
 
-import org.springframework.stereotype.Component;
+// import org.springframework.stereotype.Component;
 
-import com.github.andreyjodar.backend.features.category.model.Category;
-import com.github.andreyjodar.backend.features.category.model.CategoryRequest;
+// import com.github.andreyjodar.backend.features.category.model.Category;
+// import com.github.andreyjodar.backend.features.category.model.CategoryRequest;
 
-@Component
-public class CategoryMapper {
+// @Component
+// public class CategoryMapper {
     
-    public Category fromDto(CategoryRequest categoryRequest) {
-        Category category = new Category();
-        category.setName(categoryRequest.getName());
-        category.setNote(categoryRequest.getNote());
-        return category;
-    }
+//     public Category fromDto(CategoryRequest categoryRequest) {
+//         Category category = new Category();
+//         category.setName(categoryRequest.getName());
+//         category.setNote(categoryRequest.getNote());
+//         return category;
+//     }
 
-    public Category updateCategory(Category category, CategoryRequest categoryRequest) {
-        category.setName(categoryRequest.getName());
-        category.setNote(categoryRequest.getNote());
-        return category;
-    }
-}
+//     public Category updateCategory(Category category, CategoryRequest categoryRequest) {
+//         category.setName(categoryRequest.getName());
+//         category.setNote(categoryRequest.getNote());
+//         return category;
+//     }
+// }

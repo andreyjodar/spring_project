@@ -1,10 +1,10 @@
-package com.github.andreyjodar.backend.features.category.repository;
+// package com.github.andreyjodar.backend.features.category.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+// import org.springframework.data.jpa.repository.JpaRepository;
+// import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import com.github.andreyjodar.backend.features.category.model.Category;
+// import com.github.andreyjodar.backend.features.category.model.Category;
 
-public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
+// public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
 
-} 
+// } 

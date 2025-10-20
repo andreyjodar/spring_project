@@ -1,17 +1,17 @@
-package com.github.andreyjodar.backend.features.feedback.mapper;
+// package com.github.andreyjodar.backend.features.feedback.mapper;
 
-import org.springframework.stereotype.Component;
+// import org.springframework.stereotype.Component;
 
-import com.github.andreyjodar.backend.features.feedback.model.Feedback;
-import com.github.andreyjodar.backend.features.feedback.model.FeedbackRequest;
+// import com.github.andreyjodar.backend.features.feedback.model.Feedback;
+// import com.github.andreyjodar.backend.features.feedback.model.FeedbackRequest;
 
-@Component
-public class FeedbackMapper {
+// @Component
+// public class FeedbackMapper {
     
-    public Feedback fromDto(FeedbackRequest feedbackRequest) {
-        Feedback feedback = new Feedback();
-        feedback.setGrade(feedbackRequest.getGrade());
-        feedback.setComment(feedbackRequest.getComment());
-        return feedback;
-    }
-}
+//     public Feedback fromDto(FeedbackRequest feedbackRequest) {
+//         Feedback feedback = new Feedback();
+//         feedback.setGrade(feedbackRequest.getGrade());
+//         feedback.setComment(feedbackRequest.getComment());
+//         return feedback;
+//     }
+// }

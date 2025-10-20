@@ -5,8 +5,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.github.andreyjodar.backend.features.user.model.User;
-import com.github.andreyjodar.backend.features.user.repository.UserRepository;
+import com.github.andreyjodar.backend.models.entities.User;
+import com.github.andreyjodar.backend.repositories.UserRepository;
 
 import java.util.NoSuchElementException;
 
@@ -16,7 +16,7 @@ public class AuthUserProvider {
     @Autowired
     private UserRepository userRepository;
 
-    public User getAutheticatedUser() {
+    public User getAuthUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
 
@@ -27,6 +27,6 @@ public class AuthUserProvider {
         }
 
         return userRepository.findByEmail(username)
-                .orElseThrow(() -> new NoSuchElementException("Usuário autenticado não encontrado"));
+            .orElseThrow(() -> new NoSuchElementException("Usuário autenticado não encontrado"));
     }
 }

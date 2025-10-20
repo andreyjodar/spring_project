@@ -1,12 +1,12 @@
-package com.github.andreyjodar.backend.features.user.repository;
+// package com.github.andreyjodar.backend.features.user.repository;
 
-import java.util.Optional;
+// import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+// import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.github.andreyjodar.backend.features.user.model.User;
+// import com.github.andreyjodar.backend.features.user.model.User;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+// public interface UserRepository extends JpaRepository<User, Long> {
 
-    public Optional<User> findByEmail(String email);
-}
+//     public Optional<User> findByEmail(String email);
+// }
