@@ -1,21 +1,31 @@
 package com.github.andreyjodar.backend.services.implement;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.andreyjodar.backend.core.security.AuthUserProvider;
+import com.github.andreyjodar.backend.models.dtos.filter.UserFilterDTO;
+import com.github.andreyjodar.backend.models.dtos.request.ChangePasswordDTO;
+import com.github.andreyjodar.backend.models.dtos.request.ForgotPasswordDTO;
 import com.github.andreyjodar.backend.models.dtos.request.UserCreationDTO;
 import com.github.andreyjodar.backend.models.dtos.request.UserUpdateDTO;
-import com.github.andreyjodar.backend.models.dtos.response.SimpleTextDTO;
+import com.github.andreyjodar.backend.models.dtos.response.SimpleResponseDTO;
 import com.github.andreyjodar.backend.models.entities.User;
 import com.github.andreyjodar.backend.mappers.UserMapper;
 import com.github.andreyjodar.backend.repositories.UserRepository;
+import com.github.andreyjodar.backend.services.interfaces.RandomGenerator;
 import com.github.andreyjodar.backend.services.interfaces.UserService;
+import com.github.andreyjodar.backend.services.specification.UserSpecification;
 import com.github.andreyjodar.backend.shared.errors.BusinessException;
 import com.github.andreyjodar.backend.shared.errors.ForbiddenException;
 import com.github.andreyjodar.backend.shared.errors.NotFoundException;
@@ -36,6 +46,9 @@ public class UserServiceImpl implements UserService {
     @Autowired 
     private MessageSource messageSource;
 
+    @Autowired 
+    private RandomGenerator randomGenerator;
+
     @Override
     @Transactional(readOnly = true)
     public User findById(Long id) {
@@ -50,6 +63,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email)
             .orElseThrow(() -> new NotFoundException(messageSource.getMessage("exception.users.notfound",
                 new Object[] { email }, LocaleContextHolder.getLocale())));
+    }
+
+    @Override
+    public Page<User> findFiltered(UserFilterDTO userFilterDTO, Pageable pageable) {
+        Specification<User> specification = UserSpecification.buildFilter(userFilterDTO);
+        return userRepository.findAll(specification, pageable);
     }
 
     @Override
@@ -83,15 +102,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public SimpleTextDTO delete(Long id) {
+    public SimpleResponseDTO delete(Long id) {
         User deleteUser = findById(id);
         validateHasAuction(deleteUser.getId());
         validateHasBid(deleteUser.getId());
         validateHasPayment(deleteUser.getId());
         userRepository.delete(deleteUser);
-        return new SimpleTextDTO(messageSource.getMessage("success.users.deleted",
+        
+        return new SimpleResponseDTO(messageSource.getMessage("success.users.deleted",
             new Object[] { deleteUser.getId() }, LocaleContextHolder.getLocale()));
     } 
+
+    @Override
+    @Transactional
+    public SimpleResponseDTO generateValidityCode(ForgotPasswordDTO forgotPasswordDTO) {
+        User user = findByEmail(forgotPasswordDTO.getEmail());
+        String validityCode = randomGenerator.generateRandomAlphanumeric(6);
+        user.setValidityCode(validityCode);
+        user.setExpirationDate(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+
+        return new SimpleResponseDTO(messageSource.getMessage("success.users.sendcode",
+            new Object[] { user.getEmail() }, LocaleContextHolder.getLocale()));
+    }
+
+    @Override
+    public SimpleResponseDTO changePassword(ChangePasswordDTO changePasswordDTO) {
+        User user = findByEmail(changePasswordDTO.getEmail());
+        validateValidityCode(user, changePasswordDTO.getValidityCode());
+        userMapper.updateEntityFromDto(changePasswordDTO, user);
+        userRepository.save(user);
+
+        return new SimpleResponseDTO(messageSource.getMessage("success.users.passwordchange",
+            new Object[] { user.getEmail() }, LocaleContextHolder.getLocale()));
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -149,4 +193,16 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    private void validateValidityCode(User user, String validityCode) {
+        if(!user.getValidityCode().equals(validityCode)) {
+            throw new BusinessException(messageSource.getMessage("exception.users.wrongcode",
+                new Object[] { validityCode }, LocaleContextHolder.getLocale()));           
+        }
+
+        if(!user.getExpirationDate().isBefore(LocalDateTime.now())) {
+            throw new BusinessException(messageSource.getMessage("exception.users.expiratecode",
+                new Object[] { validityCode }, LocaleContextHolder.getLocale()));    
+        }
+    }
+    
 }
