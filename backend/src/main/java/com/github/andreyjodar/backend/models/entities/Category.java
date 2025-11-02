@@ -24,10 +24,10 @@ import lombok.Setter;
 @SQLRestriction("deleted = false") 
 public class Category extends BaseEntity {
 
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @Column(name = "note", nullable = false, length = 150)
+    @Column(name = "note", length = 150)
     private String note;
 
     @Column(name = "deleted", nullable = false)

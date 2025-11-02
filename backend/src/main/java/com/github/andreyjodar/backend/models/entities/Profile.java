@@ -3,6 +3,7 @@ package com.github.andreyjodar.backend.models.entities;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.andreyjodar.backend.core.models.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -25,4 +26,12 @@ public class Profile extends BaseEntity {
 
     @Column(name = "role", unique = true, nullable = false)
     private String role;
+
+    @Column(name = "deleted", nullable = false)
+    @JsonIgnore
+    private boolean deleted = false;
+
+    public Profile(String role) {
+        this.role = role;
+    }
 }

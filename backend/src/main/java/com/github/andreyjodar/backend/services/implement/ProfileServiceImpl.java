@@ -10,21 +10,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.andreyjodar.backend.models.dtos.request.ProfileCreationDTO;
 import com.github.andreyjodar.backend.models.dtos.request.ProfileUpdateDTO;
-import com.github.andreyjodar.backend.models.dtos.response.SimpleTextDTO;
+import com.github.andreyjodar.backend.models.dtos.response.SimpleResponseDTO;
 import com.github.andreyjodar.backend.models.entities.Profile;
 import com.github.andreyjodar.backend.repositories.ProfileRepository;
+import com.github.andreyjodar.backend.repositories.UserRepository;
 import com.github.andreyjodar.backend.services.interfaces.ProfileService;
 import com.github.andreyjodar.backend.shared.errors.BusinessException;
 import com.github.andreyjodar.backend.shared.errors.NotFoundException;
 
-@Service
-public class ProfileServiceImpl implements ProfileService {
-    
-    @Autowired
-    private ProfileRepository profileRepository;
+import lombok.AllArgsConstructor;
 
-    @Autowired
-    private MessageSource messageSource;
+@Service
+@AllArgsConstructor
+public class ProfileServiceImpl implements ProfileService {
+    private final ProfileRepository profileRepository;
+    private final UserRepository userRepository;
+    private final MessageSource messageSource;
 
     @Override
     @Transactional(readOnly = true)
@@ -66,12 +67,10 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public SimpleTextDTO delete(Long id) {
+    public void delete(Long id) {
         Profile profile = findById(id);
         validateExistsUsers(profile);
         profileRepository.delete(profile);
-        return new SimpleTextDTO(messageSource.getMessage("success.profiles.deleted",
-            new Object[] { profile.getId() }, LocaleContextHolder.getLocale()));
     }
 
     private String formatRole(String role) {
@@ -81,7 +80,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void validateExistsUsers(Profile profile) {
-        if(profileRepository.existsUsersByProfilesId(profile.getId())) {
+        if(userRepository.existsByProfilesId(profile.getId())) {
             throw new BusinessException(messageSource.getMessage("exception.profiles.hasusers",
                 new Object[] { profile.getRole() }, LocaleContextHolder.getLocale()));
         }

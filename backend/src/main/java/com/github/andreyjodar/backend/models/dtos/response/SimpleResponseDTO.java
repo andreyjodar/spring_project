@@ -3,10 +3,10 @@ package com.github.andreyjodar.backend.models.dtos.response;
 import lombok.Data;
 
 @Data
-public class SimpleTextDTO {
+public class SimpleResponseDTO {
     private String response;
 
-    public SimpleTextDTO(String response) {
+    public SimpleResponseDTO(String response) {
         this.response = response;
     }
 }

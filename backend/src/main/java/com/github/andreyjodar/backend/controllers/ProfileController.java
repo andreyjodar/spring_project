@@ -1,6 +1,8 @@
 package com.github.andreyjodar.backend.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.andreyjodar.backend.models.dtos.request.ProfileCreationDTO;
 import com.github.andreyjodar.backend.models.dtos.request.ProfileUpdateDTO;
-import com.github.andreyjodar.backend.models.dtos.response.SimpleTextDTO;
+import com.github.andreyjodar.backend.models.dtos.response.SimpleResponseDTO;
 import com.github.andreyjodar.backend.models.entities.Profile;
 import com.github.andreyjodar.backend.services.interfaces.ProfileService;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/api/profile")
+@RequestMapping("/api/profiles")
+@AllArgsConstructor
 public class ProfileController {
-
-    @Autowired 
-    private ProfileService profileService;
+    private final ProfileService profileService;
+    private final MessageSource messageSource;
 
     @GetMapping
     public ResponseEntity<Page<Profile>> getAllProfiles(Pageable pageable) {
@@ -46,21 +49,23 @@ public class ProfileController {
     }
 
     @PostMapping 
-    // @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Profile> create(@Valid @RequestBody ProfileCreationDTO profileCreationDTO) {
         return ResponseEntity.ok(profileService.create(profileCreationDTO));
     }
 
     @PutMapping("/{id}")
-    // @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Profile> update(@PathVariable("id") Long id, @Valid @RequestBody ProfileUpdateDTO profileUpdateDTO) {
         return ResponseEntity.ok(profileService.update(id, profileUpdateDTO));
     }
 
     @DeleteMapping("/{id}") 
-    // @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<SimpleTextDTO> delete(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(profileService.delete(id));
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<SimpleResponseDTO> delete(@PathVariable("id") Long id) {
+        profileService.delete(id);
+        return ResponseEntity.ok(new SimpleResponseDTO(messageSource.getMessage("success.profiles.deleted",
+            new Object[] { id }, LocaleContextHolder.getLocale())));
     }
 
 }

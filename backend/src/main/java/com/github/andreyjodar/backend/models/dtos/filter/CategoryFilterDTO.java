@@ -1,12 +1,9 @@
 package com.github.andreyjodar.backend.models.dtos.filter;
 
-import java.util.Set;
-
 import lombok.Data;
 
 @Data
-public class UserFilterDTO {
+public class CategoryFilterDTO {
     private String name;
-    private String email;
-    private Set<String> profiles;
+    private String note;
 }

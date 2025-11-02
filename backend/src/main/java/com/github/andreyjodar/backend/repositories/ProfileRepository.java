@@ -12,5 +12,4 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Optional<Profile> findById(Long id);
     Optional<Profile> findByRole(String role);
     Page<Profile> findAll(Pageable pageable);
-    boolean existsUsersByProfilesId(Long id);
 }

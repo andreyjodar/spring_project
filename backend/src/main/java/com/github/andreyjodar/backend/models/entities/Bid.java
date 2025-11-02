@@ -36,4 +36,7 @@ public class Bid extends BaseEntity {
     @NotNull @ManyToOne
     @JoinColumn(name = "id_auction", nullable = false)
     private Auction auction;
+
+    @Column(name="deleted", nullable=false)
+    private boolean deleted;
 }

@@ -1,5 +1,6 @@
 package com.github.andreyjodar.backend.mappers;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public abstract class UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "name", expression = "java(dto.getName())")
     @Mapping(target = "profiles", expression = "java(mapProfiles(dto.getProfiles()))")
     @Mapping(target = "validityCode", ignore = true)
     @Mapping(target = "expirationDate", ignore = true)
@@ -44,10 +46,14 @@ public abstract class UserMapper {
     public abstract void updateEntityFromDto(UserUpdateDTO dto, @org.mapstruct.MappingTarget User entity);
 
     @Mapping(target = "email", ignore = true)
-    @Mapping(target = "password", expression = "java(passwordEncoder.encode(dto.getPassword()))")
+    @Mapping(target = "password", expression = "java(passwordEncoder.encode(dto.getNewPassword()))")
     @Mapping(target = "validityCode", expression = "java(null)") 
     @Mapping(target = "expirationDate", expression = "java(null)")
     public abstract void updateEntityFromDto(ChangePasswordDTO dto, @org.mapstruct.MappingTarget User entity);
+
+    @Mapping(target = "validityCode", expression = "java(validityCode)")
+    @Mapping(target = "expirationDate", expression = "java(java.time.LocalDateTime.now().plusHours(1))")
+    public abstract void updateEntityWithValidityCode(String validityCode, @org.mapstruct.MappingTarget User entity);
 
     protected Set<Profile> mapProfiles(Set<String> roles) {
         if (roles == null) {

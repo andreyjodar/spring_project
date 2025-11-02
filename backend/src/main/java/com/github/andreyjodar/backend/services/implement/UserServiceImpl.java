@@ -2,7 +2,6 @@ package com.github.andreyjodar.backend.services.implement;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -22,6 +21,9 @@ import com.github.andreyjodar.backend.models.dtos.request.UserUpdateDTO;
 import com.github.andreyjodar.backend.models.dtos.response.SimpleResponseDTO;
 import com.github.andreyjodar.backend.models.entities.User;
 import com.github.andreyjodar.backend.mappers.UserMapper;
+import com.github.andreyjodar.backend.repositories.AuctionRepository;
+import com.github.andreyjodar.backend.repositories.BidRepository;
+import com.github.andreyjodar.backend.repositories.PaymentRepository;
 import com.github.andreyjodar.backend.repositories.UserRepository;
 import com.github.andreyjodar.backend.services.interfaces.RandomGenerator;
 import com.github.andreyjodar.backend.services.interfaces.UserService;
@@ -30,24 +32,20 @@ import com.github.andreyjodar.backend.shared.errors.BusinessException;
 import com.github.andreyjodar.backend.shared.errors.ForbiddenException;
 import com.github.andreyjodar.backend.shared.errors.NotFoundException;
 
+import lombok.AllArgsConstructor;
+
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private AuthUserProvider authUserProvider;
-
-    @Autowired 
-    private MessageSource messageSource;
-
-    @Autowired 
-    private RandomGenerator randomGenerator;
+    private final UserRepository userRepository;
+    private final AuctionRepository auctionRepository;
+    private final BidRepository bidRepository;
+    private final PaymentRepository paymentRepository;
+    private final UserMapper userMapper;
+    private final AuthUserProvider authUserProvider;
+    private final MessageSource messageSource;
+    private final RandomGenerator randomGenerator;
 
     @Override
     @Transactional(readOnly = true)
@@ -95,53 +93,37 @@ public class UserServiceImpl implements UserService {
         User authUser = authUserProvider.getAuthUser();
         validateUpdate(updateUser, authUser);
         validateUpdateRole(authUser, userUpdateDTO);
-        validateEmail(userUpdateDTO.getEmail());
         userMapper.updateEntityFromDto(userUpdateDTO, updateUser);
         return userRepository.save(updateUser);
     }
 
     @Override
     @Transactional
-    public SimpleResponseDTO delete(Long id) {
+    public void delete(Long id) {
         User deleteUser = findById(id);
         validateHasAuction(deleteUser.getId());
         validateHasBid(deleteUser.getId());
         validateHasPayment(deleteUser.getId());
+        deleteUser.getProfiles().clear();
         userRepository.delete(deleteUser);
-        
-        return new SimpleResponseDTO(messageSource.getMessage("success.users.deleted",
-            new Object[] { deleteUser.getId() }, LocaleContextHolder.getLocale()));
     } 
 
     @Override
     @Transactional
-    public SimpleResponseDTO generateValidityCode(ForgotPasswordDTO forgotPasswordDTO) {
+    public void sendValidityCode(ForgotPasswordDTO forgotPasswordDTO) {
         User user = findByEmail(forgotPasswordDTO.getEmail());
         String validityCode = randomGenerator.generateRandomAlphanumeric(6);
-        user.setValidityCode(validityCode);
-        user.setExpirationDate(LocalDateTime.now().plusHours(1));
+        userMapper.updateEntityWithValidityCode(validityCode, user);
         userRepository.save(user);
-
-        return new SimpleResponseDTO(messageSource.getMessage("success.users.sendcode",
-            new Object[] { user.getEmail() }, LocaleContextHolder.getLocale()));
     }
 
     @Override
-    public SimpleResponseDTO changePassword(ChangePasswordDTO changePasswordDTO) {
+    @Transactional
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
         User user = findByEmail(changePasswordDTO.getEmail());
         validateValidityCode(user, changePasswordDTO.getValidityCode());
         userMapper.updateEntityFromDto(changePasswordDTO, user);
         userRepository.save(user);
-
-        return new SimpleResponseDTO(messageSource.getMessage("success.users.passwordchange",
-            new Object[] { user.getEmail() }, LocaleContextHolder.getLocale()));
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
-            .orElseThrow(() -> new UsernameNotFoundException(messageSource.getMessage("exception.users.notfound",
-                new Object[] { username }, LocaleContextHolder.getLocale())));
     }
 
     private void validateEmail(String email) {
@@ -173,21 +155,21 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateHasAuction(Long id) {
-        if(userRepository.existsByAuctions_UserId(id)) {
+        if(auctionRepository.existsByAuctioneerId(id)) {
             throw new BusinessException(messageSource.getMessage("exception.users.hasauction",
                 new Object[] { id }, LocaleContextHolder.getLocale()));
         }
     }
 
     private void validateHasBid(Long id) {
-        if(userRepository.existsByBids_UserId(id)) {
+        if(bidRepository.existsByBidderId(id)) {
             throw new BusinessException(messageSource.getMessage("exception.users.hasbid",
                 new Object[] { id }, LocaleContextHolder.getLocale()));
         }
     }
 
     private void validateHasPayment(Long id) {
-        if(userRepository.existsByPayments_UserId(id)) {
+        if(paymentRepository.existsByBuyerId(id)) {
             throw new BusinessException(messageSource.getMessage("exception.users.haspayment",
                 new Object[] { id }, LocaleContextHolder.getLocale()));
         }
@@ -195,14 +177,21 @@ public class UserServiceImpl implements UserService {
 
     private void validateValidityCode(User user, String validityCode) {
         if(!user.getValidityCode().equals(validityCode)) {
-            throw new BusinessException(messageSource.getMessage("exception.users.wrongcode",
+            throw new BusinessException(messageSource.getMessage("exception.users.invalidcode",
                 new Object[] { validityCode }, LocaleContextHolder.getLocale()));           
         }
 
-        if(!user.getExpirationDate().isBefore(LocalDateTime.now())) {
+        if(user.getExpirationDate().isBefore(LocalDateTime.now())) {
             throw new BusinessException(messageSource.getMessage("exception.users.expiratecode",
                 new Object[] { validityCode }, LocaleContextHolder.getLocale()));    
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException(messageSource.getMessage("exception.auth.notfound",
+                new Object[] { username }, LocaleContextHolder.getLocale())));
     }
     
 }

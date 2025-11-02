@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,10 +23,12 @@ public class BaseEntity {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     @UpdateTimestamp
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
 }

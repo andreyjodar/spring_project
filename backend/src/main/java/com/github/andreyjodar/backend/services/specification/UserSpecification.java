@@ -9,13 +9,20 @@ import jakarta.persistence.criteria.Join;
 import java.util.Set;
 
 public class UserSpecification {
-
     public static Specification<User> nameLike(String name) {
         if (name == null || name.trim().isEmpty()) {
             return null; 
         }
         return (root, query, criteriaBuilder) -> 
             criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
+    }
+
+    public static Specification<User> emailLike(String email) {
+        if(email == null || email.trim().isEmpty()) {
+            return null;
+        }
+        return (root, query, criteriaBuilder) -> 
+            criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%" + email.toLowerCase() + "%");
     }
 
     public static Specification<User> hasAnyProfile(Set<String> profiles) {
@@ -34,6 +41,10 @@ public class UserSpecification {
 
         if (userFilterDTO.getName() != null && !userFilterDTO.getName().trim().isEmpty()) {
             spec = spec.and(UserSpecification.nameLike(userFilterDTO.getName()));
+        }
+
+        if (userFilterDTO.getEmail() != null && !userFilterDTO.getEmail().trim().isEmpty()) {
+            spec = spec.and(UserSpecification.emailLike(userFilterDTO.getEmail()));
         }
 
         if (userFilterDTO.getProfiles() != null && !userFilterDTO.getProfiles().isEmpty()) {
