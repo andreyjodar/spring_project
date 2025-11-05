@@ -38,13 +38,10 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/auth/login").permitAll()
-                .requestMatchers("/api/auth/register").permitAll()
-                .requestMatchers("/api/auth/recover-password").permitAll()
-                .requestMatchers("/api/auth/change-password").permitAll()
-
+                .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/profiles/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

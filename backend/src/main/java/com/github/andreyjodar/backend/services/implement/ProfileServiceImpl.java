@@ -1,6 +1,5 @@
 package com.github.andreyjodar.backend.services.implement;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -10,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.andreyjodar.backend.models.dtos.request.ProfileCreationDTO;
 import com.github.andreyjodar.backend.models.dtos.request.ProfileUpdateDTO;
-import com.github.andreyjodar.backend.models.dtos.response.SimpleResponseDTO;
 import com.github.andreyjodar.backend.models.entities.Profile;
 import com.github.andreyjodar.backend.repositories.ProfileRepository;
 import com.github.andreyjodar.backend.repositories.UserRepository;
