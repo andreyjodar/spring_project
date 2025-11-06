@@ -18,7 +18,6 @@ import com.github.andreyjodar.backend.models.dtos.request.ChangePasswordDTO;
 import com.github.andreyjodar.backend.models.dtos.request.ForgotPasswordDTO;
 import com.github.andreyjodar.backend.models.dtos.request.UserCreationDTO;
 import com.github.andreyjodar.backend.models.dtos.request.UserUpdateDTO;
-import com.github.andreyjodar.backend.models.dtos.response.SimpleResponseDTO;
 import com.github.andreyjodar.backend.models.entities.User;
 import com.github.andreyjodar.backend.mappers.UserMapper;
 import com.github.andreyjodar.backend.repositories.AuctionRepository;

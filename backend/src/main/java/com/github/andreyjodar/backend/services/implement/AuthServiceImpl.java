@@ -1,9 +1,5 @@
 package com.github.andreyjodar.backend.services.implement;
 
-import java.time.LocalDateTime;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;

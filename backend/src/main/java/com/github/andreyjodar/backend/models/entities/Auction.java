@@ -38,7 +38,7 @@ import lombok.Setter;
 public class Auction extends BaseEntity {
 
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Picture> pictures;
+    private List<Image> pictures;
 
     @Column(name = "title", nullable = false, length = 100)
     private String title;
@@ -57,7 +57,7 @@ public class Auction extends BaseEntity {
     @JoinColumn(name="id_category", nullable = false)
     private Category category;
 
-    @Column(name = "start_date", nullable = false)
+    @Column(name = "start_datetime", nullable = false)
     private LocalDateTime startDateTime;
 
     @Column(name = "end_datetime", nullable = false)
@@ -76,10 +76,6 @@ public class Auction extends BaseEntity {
 
     @Column(name = "min_bid", nullable = false)
     private Float minBid;
-
-    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Bid> bids;
 
     @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore 
