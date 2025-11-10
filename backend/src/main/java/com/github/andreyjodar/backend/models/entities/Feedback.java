@@ -28,10 +28,10 @@ public class Feedback extends BaseEntity {
     private String comment;
 
     @NotNull @ManyToOne
+    @JoinColumn(name = "id_auction", nullable = false)
+    private Auction auction;
+
+    @NotNull @ManyToOne
     @JoinColumn(name = "id_author", nullable = false)
     private User author;
-    
-    @NotNull @ManyToOne
-    @JoinColumn(name = "id_recipient", nullable = false)
-    private User recipient;
 }

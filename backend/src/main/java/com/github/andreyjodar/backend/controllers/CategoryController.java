@@ -38,7 +38,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Category>> getFiltered(CategoryFilterDTO categoryFilterDTO, Pageable pageable) {
+    public ResponseEntity<Page<Category>> getFiltered(@Valid CategoryFilterDTO categoryFilterDTO, Pageable pageable) {
         return ResponseEntity.ok(categoryService.findFiltered(categoryFilterDTO, pageable));
     }
 

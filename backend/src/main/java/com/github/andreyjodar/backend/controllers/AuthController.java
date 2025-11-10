@@ -1,5 +1,7 @@
 package com.github.andreyjodar.backend.controllers;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,25 +24,32 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final MessageSource messageSource;
 
     @PostMapping("/login")
     public ResponseEntity<AccessTokenDTO> authenticate(@Valid @RequestBody LoginDTO loginDTO) {
-        return ResponseEntity.ok(authService.authenticate(loginDTO));
+        return ResponseEntity.ok(new AccessTokenDTO(authService.authenticate(loginDTO)));
     }
 
     @PostMapping("/register")
     public ResponseEntity<SimpleResponseDTO> register(@Valid @RequestBody UserCreationDTO userCreationDTO) {
-        return ResponseEntity.ok(authService.register(userCreationDTO));
+        authService.register(userCreationDTO);
+        return ResponseEntity.ok(new SimpleResponseDTO(messageSource.getMessage("success.users.create",
+            new Object[] { userCreationDTO.getEmail() }, LocaleContextHolder.getLocale())));
     }
 
     @PostMapping("/recover-password")
     public ResponseEntity<SimpleResponseDTO> sendRecoverCode(@Valid @RequestBody ForgotPasswordDTO forgotPasswordDTO) {
-        return ResponseEntity.ok(authService.sendRecoverCode(forgotPasswordDTO));
+        authService.sendRecoverCode(forgotPasswordDTO);
+        return ResponseEntity.ok(new SimpleResponseDTO(messageSource.getMessage("success.users.recovercode",
+            new Object[] { forgotPasswordDTO.getEmail() }, LocaleContextHolder.getLocale())));
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<SimpleResponseDTO> changePassword(@Valid @RequestBody ChangePasswordDTO changePasswordDTO) {
-        return ResponseEntity.ok(authService.changePassword(changePasswordDTO));
+        authService.changePassword(changePasswordDTO);
+        return ResponseEntity.ok(new SimpleResponseDTO(messageSource.getMessage("success.users.passwordchange",
+            new Object[] { changePasswordDTO.getEmail() }, LocaleContextHolder.getLocale())));
     }
 
 }

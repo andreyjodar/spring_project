@@ -6,4 +6,5 @@ import com.github.andreyjodar.backend.models.entities.Payment;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     boolean existsByBuyerId(Long id);
+    boolean existsByAuctionId(Long id);
 }

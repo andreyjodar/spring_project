@@ -1,4 +1,4 @@
-package com.github.andreyjodar.backend.core.config;
+package com.github.andreyjodar.backend.core.web;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

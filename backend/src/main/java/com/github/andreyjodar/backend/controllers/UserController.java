@@ -1,6 +1,5 @@
 package com.github.andreyjodar.backend.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -39,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<User>> getFiltered(UserFilterDTO userFilterDTO, Pageable pageable) {
+    public ResponseEntity<Page<User>> getFiltered(@Valid UserFilterDTO userFilterDTO, Pageable pageable) {
         return ResponseEntity.ok(userService.findFiltered(userFilterDTO, pageable));
     }
 
