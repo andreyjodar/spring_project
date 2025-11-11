@@ -1,5 +1,6 @@
 package com.github.andreyjodar.backend.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.andreyjodar.backend.core.models.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -28,6 +29,7 @@ public class Image extends BaseEntity {
     private String originName;
 
     @NotNull @ManyToOne
+    @JsonIgnore
     @JoinColumn(name="id_auction", nullable = false)
     private Auction auction;
 }

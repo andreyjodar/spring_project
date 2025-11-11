@@ -106,7 +106,7 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     private void validateCreation(User authUser) {
-        if(!authUser.isSeller()) {
+        if(!authUser.isSeller() && !authUser.isAdmin()) {
             throw new ForbiddenException(messageSource.getMessage("exception.auctions.notseller",
                 new Object[] { authUser.getEmail() }, LocaleContextHolder.getLocale()));
         }
@@ -123,7 +123,8 @@ public class AuctionServiceImpl implements AuctionService {
         }
     }
 
-    private void validateUpdate(User authUser, Auction auction) {
+    @Override
+    public void validateUpdate(User authUser, Auction auction) {
         if(!authUser.isAdmin() && !authUser.isSeller()) {
             throw new ForbiddenException(messageSource.getMessage("exception.auctions.notseller",
                 new Object[] { authUser.getEmail() }, LocaleContextHolder.getLocale()));
@@ -163,26 +164,29 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     private void validateUpdateDateTime(Auction auction, AuctionUpdateDTO auctionUpdateDTO) {
+        LocalDateTime newStart = auctionUpdateDTO.getStartDateTime() != null 
+            ? auctionUpdateDTO.getStartDateTime() : auction.getStartDateTime();        
+        LocalDateTime newEnd = auctionUpdateDTO.getEndDateTime() != null 
+            ? auctionUpdateDTO.getEndDateTime() : auction.getEndDateTime();
+            
         if (auction.getStartDateTime().isBefore(LocalDateTime.now())) {
-            if (auctionUpdateDTO.getStartDateTime() != null && !auctionUpdateDTO.getStartDateTime().equals(auction.getStartDateTime())) {
+            if (!newStart.equals(auction.getStartDateTime())) {
                 throw new BusinessException(messageSource.getMessage("exception.auctions.blockupdatestartdate",
                     new Object[] { auction.getStartDateTime() }, LocaleContextHolder.getLocale()));
             }
-            if (auctionUpdateDTO.getEndDateTime() != null && !auctionUpdateDTO.getEndDateTime().equals(auction.getEndDateTime())) {
+            if (!newEnd.equals(auction.getEndDateTime())) {
                 throw new BusinessException(messageSource.getMessage("exception.auctions.blockupdateenddate",
                     new Object[] { auction.getEndDateTime() }, LocaleContextHolder.getLocale()));
             }
         }
-        if (auctionUpdateDTO.getStartDateTime() != null && auctionUpdateDTO.getEndDateTime() != null) {
-            validatePeriod(auctionUpdateDTO.getStartDateTime(), auctionUpdateDTO.getEndDateTime());
-        }
+        validatePeriod(newStart, newEnd);
     }
 
     private void validateUpdateMinBid(Auction auction, AuctionUpdateDTO auctionUpdateDTO) {
         if (bidRepository.existsByAuctionId(auction.getId())) {
             if (auctionUpdateDTO.getMinBid() != null && !auctionUpdateDTO.getMinBid().equals(auction.getMinBid())) {
                 throw new BusinessException(messageSource.getMessage("exception.auctions.blockupdateminbid",
-                    null, LocaleContextHolder.getLocale()));
+                    new Object[] { auction.getId() }, LocaleContextHolder.getLocale()));
             }
         }
     }

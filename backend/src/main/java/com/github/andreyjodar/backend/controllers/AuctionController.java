@@ -5,6 +5,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,16 +43,19 @@ public class AuctionController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('SELLER') || hasAuthority('ADMIN')")
     public ResponseEntity<Auction> create(@RequestBody @Valid AuctionCreationDTO auctionCreationDTO) {
         return ResponseEntity.ok(auctionService.create(auctionCreationDTO));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('SELLER') || hasAuthority('ADMIN')")
     public ResponseEntity<Auction> update(@PathVariable("id") Long id, @RequestBody @Valid AuctionUpdateDTO auctionUpdateDTO) {
         return ResponseEntity.ok(auctionService.update(id, auctionUpdateDTO));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('SELLER') || hasAuthority('ADMIN')")
     public ResponseEntity<SimpleResponseDTO> delete(@PathVariable("id") Long id) {
         auctionService.delete(id);
         return ResponseEntity.ok(new SimpleResponseDTO(messageSource.getMessage("success.auctions.deleted",

@@ -15,20 +15,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.github.andreyjodar.backend.core.security.AuthUserProvider;
 import com.github.andreyjodar.backend.models.entities.Auction;
 import com.github.andreyjodar.backend.models.entities.Image;
+import com.github.andreyjodar.backend.models.entities.User;
 import com.github.andreyjodar.backend.repositories.AuctionRepository;
 import com.github.andreyjodar.backend.repositories.ImageRepository;
 import com.github.andreyjodar.backend.services.interfaces.ImageService;
 import com.github.andreyjodar.backend.shared.errors.NotFoundException;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
     @Value("${file.upload-dir}")
-    private String uploadDirectory;
+    String uploadDirectory;
     private final ImageRepository imageRepository;
     private final AuctionRepository auctionRepository;
     private final MessageSource messageSource;
@@ -53,6 +55,22 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public byte[] loadImage(String uniqueName) throws IOException {
+        Path filePath = Paths.get(uploadDirectory).resolve(uniqueName);
+        if (!Files.exists(filePath)) {
+            throw new NotFoundException(messageSource.getMessage("exception.images.filenotfound",
+                new Object[] { uniqueName }, LocaleContextHolder.getLocale()));
+        }
+        return Files.readAllBytes(filePath);
+    }
+
+    @Override
+    public String getUploadDirectory() {
+        return uploadDirectory;
+    }
+
+
+    @Override
     @Transactional
     public void deleteImage(Long id) throws IOException {
         Image image = findById(id);
@@ -70,7 +88,7 @@ public class ImageServiceImpl implements ImageService {
     @Transactional(readOnly = true)
     public Image findById(Long id) {
         return imageRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(messageSource.getMessage("exception.images.notfound",
+            .orElseThrow(() -> new NotFoundException(messageSource.getMessage("exception.images.metanotfound",
                 new Object[] { id }, LocaleContextHolder.getLocale())));
     }
 
@@ -82,15 +100,23 @@ public class ImageServiceImpl implements ImageService {
             return auctionRepository.findById(auctionId).get();
         }
     }
+
+    @Override
+    public void validateOperation(User authUser, Auction auction) {
+        if(!auction.getAuctioneer().getId().equals(authUser.getId())) {
+            throw new NotFoundException(messageSource.getMessage("exception.auctions.notowner",
+                new Object[] { auction.getId() }, LocaleContextHolder.getLocale()));  
+        }
+    }
     
     private void validateFile(MultipartFile file) {
         if(file.isEmpty()) {
             throw new IllegalArgumentException(messageSource.getMessage("exception.images.emptyimage",
-                new Object[] { file.getName() }, LocaleContextHolder.getLocale()));  
+                null, LocaleContextHolder.getLocale()));  
         }
         if(file.getContentType() == null || !file.getContentType().startsWith("image/")) {
-            throw new IllegalArgumentException(messageSource.getMessage("exception.images.invalidfile",
-                new Object[] { file.getName() }, LocaleContextHolder.getLocale()));  
+            throw new IllegalArgumentException(messageSource.getMessage("exception.images.invalidtype",
+                new Object[] { file.getContentType() }, LocaleContextHolder.getLocale()));  
         }
         if(file.getSize() > 5 * 1024 * 1024) {
             throw new IllegalArgumentException(messageSource.getMessage("exception.images.largefile",
