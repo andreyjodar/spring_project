@@ -69,9 +69,6 @@ public class Auction extends BaseEntity {
     @JsonIgnore
     private Boolean deleted = false;
 
-    @Column(name = "increment_value", nullable = false)
-    private Float incrementValue;
-
-    @Column(name = "min_bid", nullable = false)
-    private Float minBid;
+    @Column(name = "current_price", nullable = false)
+    private Double currentPrice;
 }

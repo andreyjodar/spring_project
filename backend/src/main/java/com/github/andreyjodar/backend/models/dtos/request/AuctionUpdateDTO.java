@@ -22,6 +22,6 @@ public class AuctionUpdateDTO {
 
     private LocalDateTime endDateTime;
 
-    @Positive(message = "{validation.auctions.positiveminbid}")
-    private Float minBid;
+    @Positive(message = "{validation.auctions.positiveprice}")
+    private Double currentPrice;
 }

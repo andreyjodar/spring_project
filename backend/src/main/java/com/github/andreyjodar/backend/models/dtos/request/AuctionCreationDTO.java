@@ -29,7 +29,7 @@ public class AuctionCreationDTO {
     @NotNull(message = "{validation.auctions.nullenddate}")
     private LocalDateTime endDateTime;
 
-    @NotNull(message = "{validation.auctions.nullminbid}")
-    @Positive(message = "{validation.auctions.positiveminbid}")
-    private Float minBid;
+    @NotNull(message = "{validation.auctions.nullprice}")
+    @Positive(message = "{validation.auctions.positiveprice}")
+    private Double currentPrice;
 }

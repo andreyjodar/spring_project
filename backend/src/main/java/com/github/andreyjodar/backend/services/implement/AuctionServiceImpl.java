@@ -75,7 +75,7 @@ public class AuctionServiceImpl implements AuctionService {
         validateUpdate(authUserProvider.getAuthUser(), auctionUpdate);
         validateActive(auctionUpdate);
         validateUpdateDateTime(auctionUpdate, auctionUpdateDTO);
-        validateUpdateMinBid(auctionUpdate,auctionUpdateDTO);
+        validateUpdatePrice(auctionUpdate,auctionUpdateDTO);
         auctionMapper.updateEntityFromDTO(auctionUpdateDTO, auctionUpdate);
         return auctionRepository.save(auctionUpdate);
     }
@@ -182,9 +182,9 @@ public class AuctionServiceImpl implements AuctionService {
         validatePeriod(newStart, newEnd);
     }
 
-    private void validateUpdateMinBid(Auction auction, AuctionUpdateDTO auctionUpdateDTO) {
+    private void validateUpdatePrice(Auction auction, AuctionUpdateDTO auctionUpdateDTO) {
         if (bidRepository.existsByAuctionId(auction.getId())) {
-            if (auctionUpdateDTO.getMinBid() != null && !auctionUpdateDTO.getMinBid().equals(auction.getMinBid())) {
+            if (auctionUpdateDTO.getCurrentPrice() != null && !auctionUpdateDTO.getCurrentPrice().equals(auction.getCurrentPrice())) {
                 throw new BusinessException(messageSource.getMessage("exception.auctions.blockupdateminbid",
                     new Object[] { auction.getId() }, LocaleContextHolder.getLocale()));
             }

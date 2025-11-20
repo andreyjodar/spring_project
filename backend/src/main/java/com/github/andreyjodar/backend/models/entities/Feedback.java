@@ -24,7 +24,7 @@ public class Feedback extends BaseEntity {
     @Column(name = "grade", nullable = false)
     private Integer grade;
 
-    @Column(name = "comment", nullable = false, length = 255)
+    @Column(name = "comment", nullable = false, length = 200)
     private String comment;
 
     @NotNull @ManyToOne
