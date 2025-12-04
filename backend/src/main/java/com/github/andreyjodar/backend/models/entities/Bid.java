@@ -22,12 +22,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "bids")
-@SQLDelete(sql = "UPDATE bids SET deleted = true WHERE id = ?")
-@SQLRestriction("deleted = false")
 public class Bid extends BaseEntity {
 
-    @Column(name = "bid_value", nullable = false)
-    private Float bidValue;
+    @Column(name = "bid_price", nullable = false)
+    private Double bidPrice;
 
     @NotNull @ManyToOne 
     @JoinColumn(name = "id_bidder", nullable = false)
@@ -36,7 +34,5 @@ public class Bid extends BaseEntity {
     @NotNull @ManyToOne
     @JoinColumn(name = "id_auction", nullable = false)
     private Auction auction;
-
-    @Column(name="deleted", nullable=false)
-    private boolean deleted;
+    
 }

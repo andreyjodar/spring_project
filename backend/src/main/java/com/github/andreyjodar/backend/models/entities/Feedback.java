@@ -1,5 +1,6 @@
 package com.github.andreyjodar.backend.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.andreyjodar.backend.core.models.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -29,6 +30,7 @@ public class Feedback extends BaseEntity {
 
     @NotNull @ManyToOne
     @JoinColumn(name = "id_auction", nullable = false)
+    @JsonIgnore
     private Auction auction;
 
     @NotNull @ManyToOne

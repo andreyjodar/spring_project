@@ -37,7 +37,7 @@ public class UserSpecification {
     }
 
     public static Specification<User> buildFilter(UserFilterDTO userFilterDTO) {
-        Specification<User> spec = Specification.where(null);
+        Specification<User> spec = Specification.unrestricted();
 
         if (userFilterDTO.getName() != null && !userFilterDTO.getName().trim().isEmpty()) {
             spec = spec.and(UserSpecification.nameLike(userFilterDTO.getName()));

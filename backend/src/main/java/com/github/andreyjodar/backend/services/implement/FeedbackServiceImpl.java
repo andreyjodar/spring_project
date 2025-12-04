@@ -13,12 +13,15 @@ import com.github.andreyjodar.backend.mappers.FeedbackMapper;
 import com.github.andreyjodar.backend.models.dtos.filter.FeedbackFilterDTO;
 import com.github.andreyjodar.backend.models.dtos.request.FeedbackCreationDTO;
 import com.github.andreyjodar.backend.models.dtos.request.FeedbackUpdateDTO;
+import com.github.andreyjodar.backend.models.entities.Auction;
 import com.github.andreyjodar.backend.models.entities.Feedback;
 import com.github.andreyjodar.backend.models.entities.User;
 import com.github.andreyjodar.backend.repositories.AuctionRepository;
 import com.github.andreyjodar.backend.repositories.FeedbackRepository;
 import com.github.andreyjodar.backend.services.interfaces.FeedbackService;
 import com.github.andreyjodar.backend.services.specification.FeedbackSpecification;
+import com.github.andreyjodar.backend.shared.errors.BusinessException;
+import com.github.andreyjodar.backend.shared.errors.ForbiddenException;
 import com.github.andreyjodar.backend.shared.errors.NotFoundException;
 
 import lombok.AllArgsConstructor;
@@ -32,12 +35,11 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackMapper feedbackMapper;
     private final MessageSource messageSource;
 
-
     @Override
     @Transactional(readOnly = true)
     public Feedback findById(Long id) {
         return feedbackRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(messageSource.getMessage("exception.feedback.notfound",
+            .orElseThrow(() -> new NotFoundException(messageSource.getMessage("exception.feedbacks.notfound",
                 new Object[] { id }, LocaleContextHolder.getLocale())));
     }
 
@@ -51,7 +53,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     @Transactional
     public Feedback create(FeedbackCreationDTO feedbackCreationDTO) {
-        validateAuction(feedbackCreationDTO.getAuctionId());
+        User authUser = authUserProvider.getAuthUser();
+        Auction auction = validateAuction(feedbackCreationDTO.getAuctionId());
+        validateCreation(auction, authUser);
         Feedback feedback = feedbackMapper.toEntity(feedbackCreationDTO);
         return feedbackRepository.save(feedback);
     }
@@ -61,8 +65,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     public Feedback update(Long id, FeedbackUpdateDTO feedbackUpdateDTO) {
         Feedback feedbackUpdate = findById(id);
         User authUser = authUserProvider.getAuthUser();
-        validateAuthor(feedbackUpdate, authUser);
-        feedbackMapper.updateEntityFromDto(feedbackUpdate, feedbackUpdateDTO);
+        validateOwner(feedbackUpdate, authUser);
+        feedbackMapper.updateEntityFromDto(feedbackUpdateDTO, feedbackUpdate);
         return feedbackRepository.save(feedbackUpdate);
     }
 
@@ -70,17 +74,28 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Transactional
     public void delete(Long id) {
         Feedback feedbackDelete = findById(id);
+        User authUser = authUserProvider.getAuthUser();
+        validateOwner(feedbackDelete, authUser);
         feedbackRepository.delete(feedbackDelete);
     }
     
-    private void validateAuction(Long auctionId) {
-        if(!auctionRepository.existsById(auctionId)) {
-            throw new NotFoundException(messageSource.getMessage("exception.auctions.notfound",
-                new Object[] { auctionId }, LocaleContextHolder.getLocale()));
+    private Auction validateAuction(Long auctionId) {
+        return auctionRepository.findById(auctionId)
+            .orElseThrow(() -> new NotFoundException(messageSource.getMessage("exception.auctions.notfound",
+                new Object[] { auctionId }, LocaleContextHolder.getLocale())));
+    }
+
+    private void validateCreation(Auction auction, User authUser) {
+        if(auction.getAuctioneer().getId().equals(authUser.getId())) {
+            throw new BusinessException(messageSource.getMessage("exception.feedbacks.isowner",
+                new Object[] { authUser.getEmail() }, LocaleContextHolder.getLocale()));
         }
     }
 
-    private void validateAuthor(Feedback feedback, User authUser) {
-        // finalizar validacao
+    private void validateOwner(Feedback feedback, User authUser) {
+        if(!authUser.isAdmin() && !feedback.getAuthor().getId().equals(authUser.getId())) {
+            throw new ForbiddenException(messageSource.getMessage("exception.feedback.notowner",
+                new Object[] { authUser.getEmail() }, LocaleContextHolder.getLocale()));
+        }
     }
 }

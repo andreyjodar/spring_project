@@ -82,6 +82,14 @@ public class AuctionServiceImpl implements AuctionService {
 
     @Override
     @Transactional
+    public Auction updatePrice(Auction auction, String newBidder, Double newPrice) {
+        auction.setCurrentBidder(newBidder);
+        auction.setCurrentPrice(newPrice);
+        return auctionRepository.save(auction);
+    }
+
+    @Override
+    @Transactional
     public void delete(Long id) {
         Auction auctionDelete = findById(id);
         validateDelete(authUserProvider.getAuthUser(), auctionDelete);
@@ -156,9 +164,10 @@ public class AuctionServiceImpl implements AuctionService {
         }
     }
 
-    private void validateActive(Auction auction) {
+    @Override
+    public void validateActive(Auction auction) {
         if (auction.getStatus().equals(AuctionStatus.CLOSED)) {
-            throw new BusinessException(messageSource.getMessage("exception.auctions.blockupdateclosed",
+            throw new BusinessException(messageSource.getMessage("exception.auctions.isclosed",
                 new Object[] { auction.getStartDateTime() }, LocaleContextHolder.getLocale()));
         }
     }

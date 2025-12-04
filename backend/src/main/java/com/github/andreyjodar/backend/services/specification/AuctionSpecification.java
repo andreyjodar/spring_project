@@ -64,7 +64,7 @@ public class AuctionSpecification {
     }
 
     public static Specification<Auction> buildFilter(AuctionFilterDTO auctionFilterDTO) {
-        Specification<Auction> spec = Specification.where(null);
+        Specification<Auction> spec = Specification.unrestricted();
 
         if (auctionFilterDTO.getTitle() != null) {
             spec = spec.and(AuctionSpecification.titleLike(auctionFilterDTO.getTitle()));

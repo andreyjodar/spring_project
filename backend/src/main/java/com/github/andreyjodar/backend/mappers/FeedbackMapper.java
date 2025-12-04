@@ -29,5 +29,5 @@ public abstract class FeedbackMapper {
 
     @Mapping(target = "comment", source = "comment", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "grade", source = "grade", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    public abstract void updateEntityFromDto(Feedback feedback, @MappingTarget FeedbackUpdateDTO feedbackUpdateDTO);
+    public abstract void updateEntityFromDto(FeedbackUpdateDTO feedbackUpdateDTO, @MappingTarget Feedback feedback);
 }

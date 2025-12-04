@@ -71,4 +71,7 @@ public class Auction extends BaseEntity {
 
     @Column(name = "current_price", nullable = false)
     private Double currentPrice;
+    
+    @Column(name = "current_bidder")
+    private String currentBidder;
 }

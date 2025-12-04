@@ -31,7 +31,7 @@ public class FeedbackSpecification {
     }
 
     public static Specification<Feedback> buildFilter(FeedbackFilterDTO feedbackFilterDTO) {
-        Specification<Feedback> spec = Specification.where(null);
+        Specification<Feedback> spec = Specification.unrestricted();
         if(feedbackFilterDTO.getGrade() != null) {
             spec = spec.and(withGrade(feedbackFilterDTO.getGrade()));
         }

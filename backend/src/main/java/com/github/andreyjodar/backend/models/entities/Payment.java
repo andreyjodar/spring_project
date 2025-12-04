@@ -30,8 +30,8 @@ public class Payment extends BaseEntity {
     private Auction auction;
 
     @NotNull @Positive
-    @Column(name = "value", nullable = false)
-    private Float value;
+    @Column(name = "price", nullable = false)
+    private Double price;
 
     @NotNull @ManyToOne
     @JoinColumn(name="id_buyer", nullable = false)

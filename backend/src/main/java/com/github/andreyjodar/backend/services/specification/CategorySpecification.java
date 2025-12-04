@@ -23,7 +23,7 @@ public class CategorySpecification {
     }
 
     public static Specification<Category> buildFilter(CategoryFilterDTO categoryFilterDTO) {
-        Specification<Category> spec = Specification.where(null);
+        Specification<Category> spec = Specification.unrestricted();
 
         if (categoryFilterDTO.getName() != null && !categoryFilterDTO.getName().trim().isEmpty()) {
             spec = spec.and(CategorySpecification.nameLike(categoryFilterDTO.getName()));

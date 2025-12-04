@@ -14,6 +14,8 @@ public interface AuctionService {
     Page<Auction> findFiltered(AuctionFilterDTO auctionFilterDTO, Pageable pageable);
     Auction create(AuctionCreationDTO auctionCreationDTO);
     Auction update(Long id, AuctionUpdateDTO auctionUpdateDTO);
+    Auction updatePrice(Auction auction, String newBidder, Double newPrice);
     void validateUpdate(User authUser, Auction auction);
+    public void validateActive(Auction auction);
     void delete(Long id);
 }
