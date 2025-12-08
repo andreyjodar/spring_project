@@ -21,6 +21,6 @@ public interface UserService extends UserDetailsService {
     User update(Long id, UserUpdateDTO userUpdateDTO);
     void delete(Long id);
 
-    void sendValidityCode(ForgotPasswordDTO forgotPasswordDTO);
+    void generateValidityCode(ForgotPasswordDTO forgotPasswordDTO);
     void changePassword(ChangePasswordDTO changePasswordDTO);
 }

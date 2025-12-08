@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import com.github.andreyjodar.backend.core.security.AuthUserProvider;
 import com.github.andreyjodar.backend.models.dtos.filter.UserFilterDTO;
@@ -24,6 +25,7 @@ import com.github.andreyjodar.backend.repositories.AuctionRepository;
 import com.github.andreyjodar.backend.repositories.BidRepository;
 import com.github.andreyjodar.backend.repositories.PaymentRepository;
 import com.github.andreyjodar.backend.repositories.UserRepository;
+import com.github.andreyjodar.backend.services.interfaces.EmailService;
 import com.github.andreyjodar.backend.services.interfaces.RandomGenerator;
 import com.github.andreyjodar.backend.services.interfaces.UserService;
 import com.github.andreyjodar.backend.services.specification.UserSpecification;
@@ -45,6 +47,7 @@ public class UserServiceImpl implements UserService {
     private final AuthUserProvider authUserProvider;
     private final MessageSource messageSource;
     private final RandomGenerator randomGenerator;
+    private final EmailService emailService;
 
     @Override
     @Transactional(readOnly = true)
@@ -73,8 +76,8 @@ public class UserServiceImpl implements UserService {
     public User commonCreate(UserCreationDTO userCreationDTO) {
         validateCommonCreate(userCreationDTO);
         validateEmail(userCreationDTO.getEmail());
-        User user = userMapper.toEntity(userCreationDTO);
-        return userRepository.save(user);
+        User newUser = userMapper.toEntity(userCreationDTO);
+        return userRepository.save(newUser);
     }
 
     @Override
@@ -109,11 +112,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void sendValidityCode(ForgotPasswordDTO forgotPasswordDTO) {
+    public void generateValidityCode(ForgotPasswordDTO forgotPasswordDTO) {
         User user = findByEmail(forgotPasswordDTO.getEmail());
         String validityCode = randomGenerator.generateRandomAlphanumeric(6);
         userMapper.updateEntityWithValidityCode(validityCode, user);
-        userRepository.save(user);
+        user = userRepository.save(user);
+        sendValidityCodeEmail(user);
     }
 
     @Override
@@ -123,6 +127,32 @@ public class UserServiceImpl implements UserService {
         validateValidityCode(user, changePasswordDTO.getValidityCode());
         userMapper.updateEntityFromDto(changePasswordDTO, user);
         userRepository.save(user);
+    }
+
+    private void sendValidityCodeEmail(User recoverUser) {
+        try {
+            Context context = new Context();
+            context.setVariable("name", recoverUser.getName());
+            context.setVariable("validityCode", recoverUser.getValidityCode());
+            emailService.sendTemplateEmail(recoverUser.getUsername(), 
+            "Change Auction Password Account", context, "change-password-account.html");
+        } catch (Exception e) {
+            emailService.sendSimpleEmail(recoverUser.getUsername(), "Change Auction Password Account", 
+                """
+                    Hello ${name},
+
+                    You recently requested a password change for your Auction web system account.
+                    To complete your request and set a new password, please use the 6-digit verification code below:
+
+                    Verification Code: ${validityCode}
+
+                    This code is valid for a limited time. Do not share this code with anyone.
+                    If you did not request this password change, you can safely ignore this email.
+
+                    Thank you,
+                    The Auction System Team
+                """);
+        }
     }
 
     private void validateEmail(String email) {

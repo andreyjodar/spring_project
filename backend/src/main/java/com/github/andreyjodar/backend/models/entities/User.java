@@ -1,6 +1,7 @@
 package com.github.andreyjodar.backend.models.entities;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -84,6 +85,12 @@ public class User extends BaseEntity implements UserDetails {
     @JsonIgnore
     public Boolean isBuyer() {
         return profiles.stream().anyMatch(role -> role.getRole().equals("BUYER"));
+    }
+
+    public List<String> getRoles() {
+    return profiles.stream()
+        .map(Profile::getRole) 
+        .collect(Collectors.toList());
     }
 
     @Override

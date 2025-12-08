@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.github.andreyjodar.backend.core.security.AuthUserProvider;
 import com.github.andreyjodar.backend.models.entities.Auction;
 import com.github.andreyjodar.backend.models.entities.Image;
 import com.github.andreyjodar.backend.models.entities.User;
@@ -55,6 +54,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public byte[] loadImage(String uniqueName) throws IOException {
         Path filePath = Paths.get(uploadDirectory).resolve(uniqueName);
         if (!Files.exists(filePath)) {

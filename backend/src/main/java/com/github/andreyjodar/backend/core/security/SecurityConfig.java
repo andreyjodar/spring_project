@@ -42,7 +42,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/profiles/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/feedbacks/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/auctions/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/payments/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/bids/**").permitAll()
+
+                .requestMatchers("/ws/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

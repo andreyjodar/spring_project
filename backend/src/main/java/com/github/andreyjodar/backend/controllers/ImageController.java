@@ -55,7 +55,7 @@ public class ImageController {
         return ResponseEntity.ok(savedImages);
     }
 
-    @DeleteMapping("{imageId}")
+    @DeleteMapping("/{imageId}")
     @PreAuthorize("hasAuthority('SELLER') || hasAuthority('ADMIN')")
     public ResponseEntity<SimpleResponseDTO> delete(@PathVariable("auctionId") Long auctionId, @PathVariable("imageId") Long imageId) throws IOException {
         User authUser =  authUserProvider.getAuthUser();

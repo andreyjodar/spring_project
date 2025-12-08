@@ -71,7 +71,6 @@ public class PaymentSpecification {
         if (priceSpec != null) {
             spec = spec.and(priceSpec);
         }
-
         Specification<Payment> dateSpec = dateTimeBetween(paymentFilterDTO.getMinDateTime(), paymentFilterDTO.getMaxDateTime());
         if (dateSpec != null) {
             spec = spec.and(dateSpec);

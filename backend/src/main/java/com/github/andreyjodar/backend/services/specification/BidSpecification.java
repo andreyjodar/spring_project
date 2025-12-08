@@ -48,6 +48,14 @@ public class BidSpecification {
             criteriaBuilder.equal(root.get("auction").get("id"), auctionId);
     }
 
+    public static Specification<Bid> withBidderId(Long bidderId) {
+        if(bidderId == null) {
+            return null;
+        }
+        return (root, query, criteriaBuilder) -> 
+            criteriaBuilder.equal(root.get("bidder").get("id"), bidderId);
+    }
+
     public static Specification<Bid> buildFilter(BidFilterDTO bidFilterDTO) {
         Specification<Bid> spec = Specification.unrestricted();
         
@@ -55,11 +63,14 @@ public class BidSpecification {
         if (auctionSpec != null) {
             spec = spec.and(auctionSpec);
         }
+        Specification<Bid> bidderSpec = withBidderId(bidFilterDTO.getBidderId());
+        if (bidderSpec != null) {
+            spec = spec.and(bidderSpec);
+        }
         Specification<Bid> priceSpec = priceBetween(bidFilterDTO.getMinPrice(), bidFilterDTO.getMaxPrice());
         if (priceSpec != null) {
             spec = spec.and(priceSpec);
         }
-
         Specification<Bid> dateSpec = dateTimeBetween(bidFilterDTO.getMinDateTime(), bidFilterDTO.getMaxDateTime());
         if (dateSpec != null) {
             spec = spec.and(dateSpec);

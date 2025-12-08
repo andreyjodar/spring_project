@@ -10,6 +10,7 @@ import com.github.andreyjodar.backend.models.dtos.request.ChangePasswordDTO;
 import com.github.andreyjodar.backend.models.dtos.request.ForgotPasswordDTO;
 import com.github.andreyjodar.backend.models.dtos.request.LoginDTO;
 import com.github.andreyjodar.backend.models.dtos.request.UserCreationDTO;
+import com.github.andreyjodar.backend.models.entities.User;
 import com.github.andreyjodar.backend.services.interfaces.AuthService;
 import com.github.andreyjodar.backend.services.interfaces.UserService;
 
@@ -26,8 +27,8 @@ public class AuthServiceImpl implements AuthService {
     public String authenticate(LoginDTO loginDTO) {
         Authentication authentication = authenticationManager
             .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
-            String accessToken = jwtService.generateToken(authentication.getName());
-        return accessToken;
+        User authUser = userService.findByEmail(authentication.getName());
+        return jwtService.generateToken(authUser);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void sendRecoverCode(ForgotPasswordDTO forgotPasswordDTO) {
-        userService.sendValidityCode(forgotPasswordDTO);
+        userService.generateValidityCode(forgotPasswordDTO);
     }
 
     @Override
